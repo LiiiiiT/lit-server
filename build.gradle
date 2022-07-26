@@ -29,6 +29,11 @@ dependencies {
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
+    implementation 'com.google.guava:guava:21.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.protobuf:protobuf-java-util:3.12.4'
+//    implementation 'com.google.protobuf:protobuf-java:3.12.4'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 //    runtimeOnly 'mysql:mysql-connector-java'
