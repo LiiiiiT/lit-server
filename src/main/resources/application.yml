@@ -1,12 +1,42 @@
 spring:
-## ???
+## DB
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 2268641
+    driver-class-name: com.mysql.jdbc.Driver
+#    hikari:
+#      max-lifetime: 30000
+#      connectionInitSql: select 1 from dual
+
+## Web Config
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-##??? ??
+## Swagger Ui
   springdoc:
     default-consumes-media-type: application/json
     default-produces-media-type: application/json
     swagger-ui:
       disable-swagger-default-url: true
       display-query-params-without-oauth2: true
+## JPA
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    generate-ddl: true
+## JWT
+jwt:
+  header: Authorization
+  secret: Z29tdGFrCg==
+  token-validity-in-seconds: 86400
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL : debug
