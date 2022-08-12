@@ -52,15 +52,6 @@ jobs:
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
       shell: bash
 
-    ## create firebase-key.json
-    - name: create firebase key
-      run: |
-        cd ./src/main/resources
-        ls -a .
-        touch ./firebase-service-key.json
-        echo "${{ secrets.FIREBASE_KEY }}" > ./firebase-service-key.json
-      shell: bash
-
     ## gradle build
     - name: Build with Gradle
       run: ./gradlew build -x test -x ktlintCheck -x ktlintTestSourceSetCheck -x ktlintMainSourceSetCheck -x ktlintKotlinScriptCheck
@@ -77,7 +68,6 @@ jobs:
     - name: Docker build & push to dev
       if: contains(github.ref, 'develop')
       run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_REPO }}/dotoriham-dev .
           docker push ${{ secrets.DOCKER_REPO }}/dotoriham-dev
 
