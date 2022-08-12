@@ -45,7 +45,7 @@ jobs:
 
     ## create application-prod.properties
     - name: make application-prod.properties
-      if: contains(github.ref, 'main')
+      if: contains(github.ref, 'prod')
       run: |
           cd ./src/main/resources
           touch ./application-prod.properties
