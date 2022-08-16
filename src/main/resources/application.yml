@@ -1,10 +1,10 @@
 spring:
 ## DB
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mariadb://127.0.0.1:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
-    password: gt2268641!
+    password: root
 #    hikari:
 #      max-lifetime: 30000
 #      connectionInitSql: select 1 from dual
@@ -23,6 +23,7 @@ spring:
 ## JPA
   jpa:
     hibernate:
+      database-platform: org.hibernate.dialect.MariaDB103Dialect
       ddl-auto: create
     show-sql: true
     properties:
