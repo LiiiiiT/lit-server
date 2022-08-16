@@ -25,16 +25,20 @@ jobs:
         mysql database: ${{ secrets.DB_DATABASE }}
         mysql user: ${{ secrets.DB_USER }}
         mysql password: ${{ secrets.DB_PASSWORD }}
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Build with Gradle
       run: ./gradlew build
+
     - name: Docker build
       run: |
        docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
        docker build -t spring-cicd .
        docker tag spring-cicd ${{ secrets.DOCKER_USER }}/spring-cicd
        docker push ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}
+
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
