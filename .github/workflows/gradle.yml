@@ -41,9 +41,9 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USER }}/simplewhale:latest
-        cache-from: type=registry,ref=${{ secrets.DOCKER_USER }}/simplewhale:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_USER }}/simplewhale:buildcache,mode=max
+        tags: ${{ secrets.DOCKER_USER }}/spring-cicd:latest
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USER }}/spring-cicd:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKER_USER }}/spring-cicd:buildcache,mode=max
 
     - name: Deploy
       uses: appleboy/ssh-action@master
@@ -53,7 +53,7 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         envs: GITHUB_SHA
         script: |
-          docker pull ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}
+          docker pull ${{ secrets.DOCKER_USER }}/spring-cicd
           docker tag ${{ secrets.DOCKER_USER }}/spring-cicd spring-cicd
           docker stop server
           docker run -d --rm --name server -p 80:8080 spring-cicd
