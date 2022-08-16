@@ -19,7 +19,7 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
     - name: Setup MySQL
-      uses: samin/mysql-action@v1
+      uses: getong/mariadb-action@v1.1
       with:
         character set server: 'utf8'
         mysql database: ${{ secrets.DB_DATABASE }}
@@ -39,7 +39,7 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.AWS_HOST }}
-        username: ec2-user
+        username: ${{ secrets.AWS_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         envs: GITHUB_SHA
         script: |
