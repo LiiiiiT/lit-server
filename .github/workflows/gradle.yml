@@ -18,6 +18,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
+      with:
+        character set server: 'utf8'
+        mysql database: ${{ secrets.DB_DATABASE }}
+        mysql user: ${{ secrets.DB_USER }}
+        mysql password: ${{ secrets.DB_PASSWORD }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
