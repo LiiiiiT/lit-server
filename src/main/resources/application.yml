@@ -1,10 +1,10 @@
 spring:
 ## DB
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mariadb://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC
+    driver-class-name: org.mariadb.jdbc.Driver
     username: root
-    password: 2268641
-    driver-class-name: com.mysql.jdbc.Driver
+    password: gt2268641!
 #    hikari:
 #      max-lifetime: 30000
 #      connectionInitSql: select 1 from dual
