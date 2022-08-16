@@ -57,4 +57,4 @@ jobs:
           docker pull ${{ secrets.DOCKER_USER }}/spring-cicd
           docker tag ${{ secrets.DOCKER_USER }}/spring-cicd spring-cicd
           docker stop server
-          docker run -d --rm --name server -p 80:8080 spring-cicd
+          docker run -d --rm --name server -p 80:8080 ${{ secrets.DOCKER_USER }}/spring-cicd
