@@ -51,6 +51,7 @@ jobs:
         host: ${{ secrets.AWS_HOST }}
         username: ${{ secrets.AWS_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
+        envs: GITHUB_SHA
         script: |
           docker pull ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO }}
           docker tag ${{ secrets.DOCKER_USER }}/spring-cicd spring-cicd
