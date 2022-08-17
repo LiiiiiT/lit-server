@@ -82,6 +82,6 @@ jobs:
         envs: GITHUB_SHA
         script: |
           docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
-          docker tag ${{ secrets.DOCKER_USER }}/spring-cicd:${GITHUB_SHA::7} lit-prod
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
           docker stop server
           docker run -d --rm --name server -p 80:8080 lit-prod
