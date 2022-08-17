@@ -57,9 +57,10 @@ jobs:
         echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
       shell: bash
 
-      ## gradle build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build -x test -x ktlintCheck -x ktlintTestSourceSetCheck -x ktlintMainSourceSetCheck -x ktlintKotlinScriptCheck
+      run: ./gradlew build
 
       ## docker build & push to production
     - name: Docker build & push to prod
