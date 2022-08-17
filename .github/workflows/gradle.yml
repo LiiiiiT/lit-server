@@ -86,3 +86,4 @@ jobs:
           docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
           docker stop server
           docker run -d --rm --name server -p 8080:8080 lit-prod
+
