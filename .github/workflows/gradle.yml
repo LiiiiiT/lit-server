@@ -66,8 +66,8 @@ jobs:
       if: contains(github.ref, 'main')
       run: |
         docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_REPO }}/dotoriham-prod .
-        docker push ${{ secrets.DOCKER_REPO }}/dotoriham-prod
+        docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USER }}/dotoriham-prod .
+        docker push ${{ secrets.DOCKER_USER }}/dotoriham-prod
 
       ## deploy to production
     - name: Deploy to prod
@@ -81,6 +81,6 @@ jobs:
         envs: GITHUB_SHA
         script: |
           sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/dotoriham-prod
+          sudo docker pull ${{ secrets.DOCKER_USER }}/dotoriham-prod
           docker-compose up -d
           docker image prune -f
