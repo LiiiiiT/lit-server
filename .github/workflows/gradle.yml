@@ -79,7 +79,6 @@ jobs:
         host: ${{ secrets.AWS_HOST }}
         username: ${{ secrets.AWS_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
-        envs: GITHUB_SHA
         script: |
           docker pull ${{ secrets.DOCKER_USER }}/lit-prod
           docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
