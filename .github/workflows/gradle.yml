@@ -19,7 +19,8 @@ jobs:
     - name: Set commit msg
       env:
         GITHUB_SHA: ${{ github.sha }}
-
+      run: |
+        echo $GITHUB_ENV
     ## mariaDB
     - name: Setup MySQL
       uses: getong/mariadb-action@v1.1
