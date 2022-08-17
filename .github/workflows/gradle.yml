@@ -64,6 +64,8 @@ jobs:
       ## docker build & push to production
     - name: Docker build & push to prod
       if: contains(github.ref, 'main')
+      env:
+        GITHUB_SHA: ${{ github.sha }}
       run: |
         docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-prod -t lit-prod .
@@ -75,6 +77,8 @@ jobs:
       uses: appleboy/ssh-action@master
       id: deploy-prod
       if: contains(github.ref, 'main')
+      env:
+        GITHUB_SHA: ${{ github.sha }}
       with:
         host: ${{ secrets.AWS_HOST }}
         username: ${{ secrets.AWS_USER }}
