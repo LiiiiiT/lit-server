@@ -82,8 +82,9 @@ jobs:
         port: ${{ secrets.AWS_PORT }}
         script: |
           whoami
-          docker pull ${{ secrets.DOCKER_USER }}/lit-prod
-          docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
-          docker stop server
-          docker run -d --rm --name server -p 8080:8080 lit-prod
+          ls -al
+#          docker pull ${{ secrets.DOCKER_USER }}/lit-prod
+#          docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
+#          docker stop server
+#          docker run -d --rm --name server -p 8080:8080 lit-prod
 
