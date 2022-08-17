@@ -16,6 +16,12 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
+    - name: Set commit msg
+      env:
+        GITHUB_SHA: ${{ github.sha }}
+      run: |
+        echo "COMMIT_MSG=Update from https://github.com/your/테스트/$GITHUB_SHA" >> $GITHUB_ENV
+        echo $COMMIT_MSG
     ## mariaDB
     - name: Setup MySQL
       uses: getong/mariadb-action@v1.1
@@ -64,29 +70,25 @@ jobs:
       ## docker build & push to production
     - name: Docker build & push to prod
       if: contains(github.ref, 'main')
-      env:
-        GITHUB_SHA: ${{ github.sha }}
       run: |
         docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-prod -t lit-prod .
-        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod:${ GITHUB_SHA::7 } 
-        docker push ${{ secrets.DOCKER_USER }}/lit-prod:${ GITHUB_SHA::7 }
+        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod:$GITHUB_SHA::7 
+        docker push ${{ secrets.DOCKER_USER }}/lit-prod:$GITHUB_SHA::7
 
       ## deploy to production
     - name: Deploy to prod
       uses: appleboy/ssh-action@master
       id: deploy-prod
       if: contains(github.ref, 'main')
-      env:
-        GITHUB_SHA: ${{ github.sha }}
       with:
         host: ${{ secrets.AWS_HOST }}
         username: ${{ secrets.AWS_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.AWS_PORT }}
         script: |
-          docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${ GITHUB_SHA::7 }
-          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${ GITHUB_SHA::7 } lit-prod
+          docker pull ${{ secrets.DOCKER_USER }}/lit-prod:$GITHUB_SHA::7
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:$GITHUB_SHA::7 lit-prod
           docker stop server
           docker run -d --rm --name server -p 8080:8080 lit-prod
 
