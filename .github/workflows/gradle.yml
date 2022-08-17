@@ -67,19 +67,21 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-prod -t lit-prod .
-        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod 
-        docker push ${{ secrets.DOCKER_USER }}/lit-prod
+        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} 
+        docker push ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
 
       ## deploy to production
     - name: Deploy to prod
       uses: appleboy/ssh-action@master
+      id: deploy-prod
       if: contains(github.ref, 'main')
       with:
         host: ${{ secrets.AWS_HOST }}
         username: ${{ secrets.AWS_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
+        envs: GITHUB_SHA
         script: |
-          docker pull ${{ secrets.DOCKER_USER }}/lit-prod
-          docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
+          docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
           docker stop server
           docker run -d --rm --name server -p 8080:8080 lit-prod
