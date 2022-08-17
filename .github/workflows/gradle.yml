@@ -82,7 +82,8 @@ jobs:
         port: ${{ secrets.AWS_PORT }}
         envs: GITHUB_SHA
         script: |
-          echo "${GITHUB_SHA::7}"
+          whoami
+          echo ${GITHUB_SHA::7}
           docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
           docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
           docker stop server
