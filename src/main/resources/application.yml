@@ -1,38 +1,39 @@
 spring:
-## DB
+  ## DB
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mariadb://127.0.0.1:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+    driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: 2268641
-    driver-class-name: com.mysql.jdbc.Driver
-#    hikari:
-#      max-lifetime: 30000
-#      connectionInitSql: select 1 from dual
+  #    hikari:
+  #      max-lifetime: 30000
+  #      connectionInitSql: select 1 from dual
 
-## Web Config
+  ## Web Config
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-## Swagger Ui
+  ## Swagger Ui
   springdoc:
     default-consumes-media-type: application/json
     default-produces-media-type: application/json
     swagger-ui:
       disable-swagger-default-url: true
       display-query-params-without-oauth2: true
-## JPA
+  ## JPA
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MariaDB103Dialect
     generate-ddl: true
 ## JWT
 jwt:
   header: Authorization
-## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
+  ## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
   secret: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
   token-validity-in-seconds: 86400
 
