@@ -16,11 +16,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
-    - name: Set commit msg
-      env:
-        GITHUB_SHA: ${{ github.sha }}
-      run: |
-        echo $GITHUB_ENV
     ## mariaDB
     - name: Setup MySQL
       uses: getong/mariadb-action@v1.1
@@ -72,8 +67,8 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-prod -t lit-prod .
-        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod:$GITHUB_SHA 
-        docker push ${{ secrets.DOCKER_USER }}/lit-prod:$GITHUB_SHA
+        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod 
+        docker push ${{ secrets.DOCKER_USER }}/lit-prod
 
       ## deploy to production
     - name: Deploy to prod
