@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+<<<<<<< HEAD
       - uses: actions/checkout@v2
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -87,3 +88,82 @@ jobs:
             docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
             docker stop server
             docker run -d --rm --name server -p 8080:8080 lit-prod
+=======
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+    ## mariaDB
+    - name: Setup MySQL
+      uses: getong/mariadb-action@v1.1
+      with:
+        character set server: 'utf8'
+        mysql database: ${{ secrets.DB_DATABASE }}
+        mysql user: ${{ secrets.DB_USER }}
+        mysql password: ${{ secrets.DB_PASSWORD }}
+    ## gradle caching
+    - name: Gradle Caching
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    ## create application-dev.properties
+#    - name: make application-dev.properties
+#      if: contains(github.ref, 'develop') # branch가 develop일 때
+#      run: |
+#    # spring의 resources 경로로 이동
+#         cd ./src/main/resources
+#    # application-dev.properties 파일 생성
+#         touch ./application-dev.properties
+#    # GitHub-Actions에서 설정한 값을 application-dev.properties 파일에 쓰기
+#         echo "${{ secrets.PROPERTIES_DEV }}" > ./application-dev.properties
+#      shell: bash
+
+      ## create application-prod.yml
+    - name: make application-prod.yml
+      if: contains(github.ref, 'main') # branch가 main 일 때, 나머지는 위와 동일
+      run: |
+        cd ./src/main/resources
+        touch ./application-prod.yml
+        echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
+      shell: bash
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+
+      ## docker build & push to production
+    - name: Docker build & push to prod
+      if: contains(github.ref, 'main')
+      run: |
+        docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile-prod -t lit-prod .
+        docker tag lit-prod ${{ secrets.DOCKER_USER }}/lit-prod 
+        docker push ${{ secrets.DOCKER_USER }}/lit-prod
+
+      ## deploy to production
+    - name: Deploy to prod
+      uses: appleboy/ssh-action@master
+      id: deploy-prod
+      if: contains(github.ref, 'main')
+      with:
+        host: ${{ secrets.AWS_HOST }}
+        username: ${{ secrets.AWS_USER }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: ${{ secrets.AWS_PORT }}
+        script: |
+          docker pull ${{ secrets.DOCKER_USER }}/lit-prod
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
+          docker stop server
+          docker run -d --rm --name server -p 8080:8080 lit-prod
+
+
+>>>>>>> main
