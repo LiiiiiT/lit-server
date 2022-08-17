@@ -81,10 +81,8 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.AWS_PORT }}
         script: |
-#          whoami
-#          ls -al
-          docker pull ${{ secrets.DOCKER_USER }}/lit-prod
-          docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
+          docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
           docker stop server
           docker run -d --rm --name server -p 8080:8080 lit-prod
 
