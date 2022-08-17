@@ -82,7 +82,9 @@ jobs:
         port: ${{ secrets.AWS_PORT }}
         envs: GITHUB_SHA
         script: |
+          echo "${GITHUB_SHA::7}"
           docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
           docker stop server
-          docker run -d --rm --name server -p 8080:8080 ${{ secrets.DOCKER_USER }}/lit-prod
+          docker run -d --rm --name server -p 8080:8080 lit-prod
 
