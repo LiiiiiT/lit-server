@@ -80,12 +80,10 @@ jobs:
         username: ${{ secrets.AWS_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.AWS_PORT }}
-        envs: GITHUB_SHA
         script: |
           whoami
-          echo ${GITHUB_SHA::7}
-          docker pull ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7}
-          docker tag ${{ secrets.DOCKER_USER }}/lit-prod:${GITHUB_SHA::7} lit-prod
+          docker pull ${{ secrets.DOCKER_USER }}/lit-prod
+          docker tag ${{ secrets.DOCKER_USER }}/lit-prod lit-prod
           docker stop server
           docker run -d --rm --name server -p 8080:8080 lit-prod
 
