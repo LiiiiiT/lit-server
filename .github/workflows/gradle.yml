@@ -2,9 +2,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -16,14 +16,14 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
-    ## mariaDB
-    - name: Setup MySQL
-      uses: getong/mariadb-action@v1.1
-      with:
-        character set server: 'utf8'
-        mysql database: ${{ secrets.DB_DATABASE }}
-        mysql user: ${{ secrets.DB_USER }}
-        mysql password: ${{ secrets.DB_PASSWORD }}
+#    ## mariaDB
+#    - name: Setup MySQL
+#      uses: getong/mariadb-action@v1.1
+#      with:
+#        character set server: 'utf8'
+#        mysql database: ${{ secrets.DB_DATABASE }}
+#        mysql user: ${{ secrets.DB_USER }}
+#        mysql password: ${{ secrets.DB_PASSWORD }}
     ## gradle caching
     - name: Gradle Caching
       uses: actions/cache@v3
@@ -36,13 +36,13 @@ jobs:
           ${{ runner.os }}-gradle-
 
     ## create application-dev.properties
-    - name: make application-dev.yml
-      if: contains(github.ref, 'develop') # branch가 develop일 때
-      run: |
-         cd ./src/main/resources
-         touch ./application-dev.yml
-         echo "${{ secrets.PROPERTIES_DEV }}" > ./application-dev.yml
-      shell: bash
+#    - name: make application-dev.yml
+#      if: contains(github.ref, 'develop') # branch가 develop일 때
+#      run: |
+#         cd ./src/main/resources
+#         touch ./application-dev.yml
+#         echo "${{ secrets.PROPERTIES_DEV }}" > ./application-dev.yml
+#      shell: bash
 
       ## create application-prod.yml
     - name: make application-prod.yml
