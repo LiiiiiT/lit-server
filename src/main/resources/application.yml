@@ -1,5 +1,5 @@
 spring:
-## DB
+  ## DB
   datasource:
     url: jdbc:mariadb://127.0.0.1:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: org.mariadb.jdbc.Driver
@@ -9,18 +9,18 @@ spring:
 #      max-lifetime: 30000
 #      connectionInitSql: select 1 from dual
 
-## Web Config
+  ## Web Config
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-## Swagger Ui
+  ## Swagger Ui
   springdoc:
     default-consumes-media-type: application/json
     default-produces-media-type: application/json
     swagger-ui:
       disable-swagger-default-url: true
       display-query-params-without-oauth2: true
-## JPA
+  ## JPA
   jpa:
     hibernate:
       ddl-auto: create
@@ -31,11 +31,18 @@ spring:
         dialect: org.hibernate.dialect.MariaDB103Dialect
     generate-ddl: true
 ## JWT
-jwt:
-  header: Authorization
-## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
-  secret: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
-  token-validity-in-seconds: 86400
+security:
+  jwt:
+    token:
+      ## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
+      secret-key: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
+      expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds
+UserController:
+  signin: Authenticates user and returns its JWT token.
+  signup: Creates user and returns its JWT token
+  delete: Deletes specific user by username
+  search: Returns specific user by username
+  me: Returns current user's data
 
 logging:
   level:
