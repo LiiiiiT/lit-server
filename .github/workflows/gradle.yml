@@ -16,14 +16,14 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
-    ## mariaDB
-    - name: Setup MySQL
-      uses: getong/mariadb-action@v1.1
-      with:
-        character set server: 'utf8'
-        mysql database: ${{ secrets.DB_DATABASE }}
-        mysql user: ${{ secrets.DB_USER }}
-        mysql password: ${{ secrets.DB_PASSWORD }}
+#    ## mariaDB
+#    - name: Setup MySQL
+#      uses: getong/mariadb-action@v1.1
+#      with:
+#        character set server: 'utf8'
+#        mysql database: ${{ secrets.DB_DATABASE }}
+#        mysql user: ${{ secrets.DB_USER }}
+#        mysql password: ${{ secrets.DB_PASSWORD }}
     ## gradle caching
     - name: Gradle Caching
       uses: actions/cache@v3
