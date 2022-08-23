@@ -1,7 +1,7 @@
 spring:
   ## DB
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mariadb://mariadb:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: 2268641
