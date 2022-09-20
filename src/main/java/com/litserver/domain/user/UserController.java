@@ -1,4 +1,4 @@
-package com.litserver;
+package com.litserver.domain.user;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -32,7 +31,7 @@ public class UserController {
 
     @PostMapping("/signin")
     public String login(@RequestBody UserDataDTO user){
-        return userService.signin(user.getUsername(),user.getPassword());
+        return userService.signin(user.getUsername(), user.getPassword());
     }
 //    @PostMapping("/signin")
 //    @ApiOperation(value = "${UserController.signin}")
@@ -52,7 +51,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "Access denied"), //
             @ApiResponse(code = 422, message = "Username is already in use")})
     public String signup(@ApiParam("Signup User") @RequestBody UserDataDTO user) {
-        return userService.signup(modelMapper.map(user, AppUser.class));
+        return userService.signup(modelMapper.map(user, User.class));
     }
 
     @DeleteMapping(value = "/{username}")

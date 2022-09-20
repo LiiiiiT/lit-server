@@ -1,4 +1,4 @@
-package com.litserver;
+package com.litserver.domain.user;
 
 
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.litserver.AppUser;
-import com.litserver.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -17,16 +15,16 @@ public class MyUserDetails implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final AppUser appUser = userRepository.findByUsername(username);
+        final User user = userRepository.findByUsername(username);
 
-        if (appUser == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("User '" + username + "' not found");
         }
 
         return org.springframework.security.core.userdetails.User//
                 .withUsername(username)//
-                .password(appUser.getPassword())//
-                .authorities(appUser.getAppUserRoles())//
+                .password(user.getPassword())//
+                .authorities(user.getUserRoles())//
                 .accountExpired(false)//
                 .accountLocked(false)//
                 .credentialsExpired(false)//

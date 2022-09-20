@@ -1,4 +1,4 @@
-package com.litserver;
+package com.litserver.global;
 
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;

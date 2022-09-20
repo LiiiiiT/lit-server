@@ -1,4 +1,4 @@
-package com.litserver;
+package com.litserver.domain.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Data // Create getters and setters
 @NoArgsConstructor
-public class AppUser {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,6 @@ public class AppUser {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    List<AppUserRole> appUserRoles;
+    List<UserRole> userRoles;
 
 }

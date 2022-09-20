@@ -1,4 +1,4 @@
-package com.litserver;
+package com.litserver.global;
 
 import org.springframework.http.HttpStatus;
 
