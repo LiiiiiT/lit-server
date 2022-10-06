@@ -9,20 +9,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MyUserDetails implements UserDetailsService {
+public class CustomUserDetails implements UserDetailsService {
 
     private final UserRepository userRepository;
-
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
+        final User user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new UsernameNotFoundException("User '" + username + "' not found");
+            throw new UsernameNotFoundException("User '" + email + "' not found");
         }
 
         return org.springframework.security.core.userdetails.User//
-                .withUsername(username)//
+                .withUsername(user.getNickName())//
                 .password(user.getPassword())//
                 .authorities(user.getUserRoles())//
                 .accountExpired(false)//

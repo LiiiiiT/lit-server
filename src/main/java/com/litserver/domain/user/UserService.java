@@ -1,7 +1,7 @@
 package com.litserver.domain.user;
 
-import com.litserver.global.CustomException;
 import com.litserver.global.jwt.JwtTokenProvider;
+import com.litserver.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,10 +31,10 @@ public class UserService {
     }
 
     public String signup(User user) {
-        if (!userRepository.existsByUsername(user.getUsername())) {
+        if (!userRepository.existsByUsername(user.getNickName())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
-            return jwtTokenProvider.createToken(user.getUsername(), user.getUserRoles());
+            return jwtTokenProvider.createToken(user.getNickName(), user.getUserRoles());
         } else {
             throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }

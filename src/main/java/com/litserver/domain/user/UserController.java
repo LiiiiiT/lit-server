@@ -1,5 +1,7 @@
 package com.litserver.domain.user;
 
+import com.litserver.domain.user.dto.UserDataDTO;
+import com.litserver.domain.user.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +33,7 @@ public class UserController {
 
     @PostMapping("/signin")
     public String login(@RequestBody UserDataDTO user){
-        return userService.signin(user.getUsername(), user.getPassword());
+        return userService.signin(user.getUsername(),user.getPassword());
     }
 //    @PostMapping("/signin")
 //    @ApiOperation(value = "${UserController.signin}")

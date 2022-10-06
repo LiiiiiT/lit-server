@@ -1,4 +1,4 @@
-package com.litserver.global.jwt;
+package com.litserver.global.filter;
 
 import java.io.IOException;
 
@@ -7,7 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.litserver.global.CustomException;
+import com.litserver.global.jwt.JwtTokenProvider;
+import com.litserver.global.exception.CustomException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

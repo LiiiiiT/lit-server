@@ -1,8 +1,8 @@
 package com.litserver.global.jwt;
 
 import com.litserver.domain.user.UserRole;
-import com.litserver.global.CustomException;
-import com.litserver.domain.user.MyUserDetails;
+import com.litserver.domain.user.CustomUserDetails;
+import com.litserver.global.exception.CustomException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -38,7 +38,7 @@ public class JwtTokenProvider {
     private long validityInMilliseconds = 3600000; // 1h
 
     @Autowired
-    private MyUserDetails myUserDetails;
+    private CustomUserDetails customUserDetails;
 
     @PostConstruct
     protected void init() {
@@ -62,7 +62,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = customUserDetails.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

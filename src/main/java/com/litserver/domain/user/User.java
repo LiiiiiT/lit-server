@@ -1,5 +1,6 @@
 package com.litserver.domain.user;
 
+import com.litserver.global.common.BaseTimeEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,22 +13,25 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
 @Data // Create getters and setters
 @NoArgsConstructor
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
-    @Column(unique = true, nullable = false)
-    private String username;
+    @Column(unique = true)
+    @NotNull
+    private String nickName;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
+    @NotNull
     private String email;
 
     @Size(min = 8, message = "Minimum password length: 8 characters")

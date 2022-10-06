@@ -1,15 +1,17 @@
-package com.litserver.global.jwt;
+package com.litserver.global.config;
 
+import com.litserver.global.filter.JwtTokenFilter;
+import com.litserver.global.jwt.JwtTokenProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-public class JwtTokenFilterConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+public class JwtTokenConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private JwtTokenProvider jwtTokenProvider;
 
-    public JwtTokenFilterConfigurer(JwtTokenProvider jwtTokenProvider) {
+    public JwtTokenConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

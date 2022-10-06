@@ -1,7 +1,7 @@
 package com.litserver.global.config;
 
 
-import com.litserver.global.jwt.JwtTokenFilterConfigurer;
+import com.litserver.global.filter.XSSRequestFilter;
 import com.litserver.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,27 +27,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        // Disable CSRF (cross site request forgery)
-        http.csrf().disable();
-
-        // No session will be created or used by spring security
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Entry points
-        http.authorizeRequests()//
+        http
+                .httpBasic().disable()
+                .csrf().disable()
+                .headers().frameOptions().disable()
+                .and()
+                .authorizeRequests()//
+                // 권한 설정
+                .antMatchers("/v2/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html","/webjars/**", "/swagger/**",   // swagger
+                        "/favicon.ico").hasIpAddress("127.0.0.1")
                 .antMatchers("/users/signin").permitAll()//
                 .antMatchers("/users/signup").permitAll()//
                 .antMatchers("/api/health-check").permitAll()//
-                .antMatchers("/v2/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html","/webjars/**", "/swagger/**",   // swagger
-                        "/favicon.ico").permitAll()
+
                 // Disallow everything else..
                 .anyRequest().authenticated();
 
         // If a user try to access a resource without having enough permissions
         http.exceptionHandling().accessDeniedPage("/login");
-
         // Apply JWT
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+        http.apply(new JwtTokenConfig(jwtTokenProvider));
 
         // Optional, if you want to test the API from a browser
         // http.httpBasic();

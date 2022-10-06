@@ -1,5 +1,6 @@
-package com.litserver.global;
+package com.litserver.global.exception;
 
+import com.litserver.global.exception.CustomException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
