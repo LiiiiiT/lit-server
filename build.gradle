@@ -23,39 +23,57 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //DB
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
     runtimeOnly 'mysql:mysql-connector-java' // Mysql
 
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
 //    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 //    implementation 'org.apache.kafka:kafka-streams'
 //    implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-    implementation 'io.springfox:springfox-swagger2:3.0.0'
-    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.4'
 
-    implementation 'com.google.guava:guava:21.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.protobuf:protobuf-java-util:3.12.4'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-//    implementation 'com.google.protobuf:protobuf-java:3.12.4'
+//    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+//    implementation 'io.springfox:springfox-swagger2:3.0.0'
+
+    // jwt 관련 의존성
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Amazon SDK
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.307')
+    implementation 'com.amazonaws:aws-java-sdk-s3'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Thumbnail : https://mvnrepository.com/artifact/net.coobird/thumbnailator
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+    // https://mvnrepository.com/artifact/com.github.gotson/webp-imageio
+    implementation group: 'com.github.gotson', name: 'webp-imageio', version: '0.2.2'
+    // meta data extractor : // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
+    implementation 'com.drewnoakes:metadata-extractor:2.18.0'
+
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation group: 'org.json', name: 'json', version: '20220320'
+
+    implementation 'org.slf4j:slf4j-api:2.0.3'
+    implementation 'org.slf4j:slf4j-simple:2.0.3'
 
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
-    implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
-    implementation 'org.slf4j:slf4j-simple:2.0.3'
 }
 
 tasks.named('test') {

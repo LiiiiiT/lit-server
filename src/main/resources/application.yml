@@ -1,4 +1,19 @@
+default-images:
+  profile: https://mvp.microsoft.com/ko-kr/PublicProfile/Photo/5000853
+cloud:
+  aws:
+    prefix: xxxix
+    region:
+      static: xxxix
+    credentials:
+      accessKey: xxxix
+      secretkey: xxxix
+    s3:
+      bucket: xxxix
 spring:
+  redis:
+    host: localhost
+    port: 6379
   ## DB
   datasource:
 #    url: jdbc:mariadb://localhost:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
@@ -14,17 +29,13 @@ spring:
 #      max-lifetime: 30000
 #      connectionInitSql: select 1 from dual
 
-  ## Web Config
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
   ## Swagger Ui
-  springdoc:
-    default-consumes-media-type: application/json
-    default-produces-media-type: application/json
-    swagger-ui:
-      disable-swagger-default-url: true
-      display-query-params-without-oauth2: true
+#  springdoc:
+#    default-consumes-media-type: application/json
+#    default-produces-media-type: application/json
+#    swagger-ui:
+#      disable-swagger-default-url: true
+#      display-query-params-without-oauth2: true
   ## JPA
   jpa:
     hibernate:
@@ -33,16 +44,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MariaDB103Dialect
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    #        dialect: org.hibernate.dialect.MariaDB103Dialect
     generate-ddl: true
 
 logging:
-  config: classpath:log4j2.xml
   level:
     org:
       hibernate:
         SQL : debug
 
+jwt:
+  ## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
+  secret-key: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
+  access-token-lifetime-in-seconds: 300000
+  refresh-token-lifetime-in-seconds: 300000
 ## JWT
 security:
   jwt:
@@ -51,9 +67,3 @@ security:
       secret-key: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
       expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds
 
-UserController:
-  signin: Authenticates user and returns its JWT token.
-  signup: Creates user and returns its JWT token
-  delete: Deletes specific user by username
-  search: Returns specific user by username
-  me: Returns current user's data
