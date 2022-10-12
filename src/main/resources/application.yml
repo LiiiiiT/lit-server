@@ -28,14 +28,6 @@ spring:
 #    hikari:
 #      max-lifetime: 30000
 #      connectionInitSql: select 1 from dual
-
-  ## Swagger Ui
-#  springdoc:
-#    default-consumes-media-type: application/json
-#    default-produces-media-type: application/json
-#    swagger-ui:
-#      disable-swagger-default-url: true
-#      display-query-params-without-oauth2: true
   ## JPA
   jpa:
     hibernate:
@@ -47,6 +39,14 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     #        dialect: org.hibernate.dialect.MariaDB103Dialect
     generate-ddl: true
+
+  ## Swagger Ui
+#  springdoc:
+#    default-consumes-media-type: application/json
+#    default-produces-media-type: application/json
+#    swagger-ui:
+#      disable-swagger-default-url: true
+#      display-query-params-without-oauth2: true
 
 logging:
   level:
