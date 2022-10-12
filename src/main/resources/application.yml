@@ -16,10 +16,10 @@ spring:
     port: 6379
   ## DB
   datasource:
-#    url: jdbc:mariadb://localhost:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    url: jdbc:mariadb://xxxx:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 #    driver-class-name: org.mariadb.jdbc.Driver
 #    username: root
-#    password: 2268641
+#    password: xxxx
     ## mysql
     url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.jdbc.Driver
@@ -37,7 +37,7 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-    #        dialect: org.hibernate.dialect.MariaDB103Dialect
+#            dialect: org.hibernate.dialect.MariaDB103Dialect
     generate-ddl: true
 
   ## Swagger Ui
@@ -54,16 +54,11 @@ logging:
       hibernate:
         SQL : debug
 
+## JWT
 jwt:
   ## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
   secret-key: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
-  access-token-lifetime-in-seconds: 300000
-  refresh-token-lifetime-in-seconds: 300000
-## JWT
-security:
-  jwt:
-    token:
-      ## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
-      secret-key: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
-      expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds
+  # 5 minutes duration by default: 30 minutes * 60 seconds * 1000 miliseconds
+  access-token-lifetime-in-seconds: 60 * 30 * 1000
+  refresh-token-lifetime-in-seconds: 60 * 60 * 24 * 30 * 1000
 
