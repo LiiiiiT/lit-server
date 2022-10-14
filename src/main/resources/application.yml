@@ -6,7 +6,7 @@ spring:
   datasource:
 #    url: jdbc:mariadb://xxxx:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 #    driver-class-name: org.mariadb.jdbc.Driver
-#    username: root
+#    username: xxxx
 #    password: xxxx
     ## mysql
     url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
@@ -19,7 +19,7 @@ spring:
   ## JPA
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -47,20 +47,20 @@ jwt:
   ## echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
   secret-key: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
   # 5 minutes duration by default: 30 minutes * 60 seconds * 1000 miliseconds
-  access-token-lifetime-in-seconds: 30000
+  access-token-lifetime-in-seconds: 1800 #1800
   # 60 * 60 * 24 * 7 * 1000 : 7day
-  refresh-token-lifetime-in-seconds: 60000
+  refresh-token-lifetime-in-seconds: 604800 #604800
 
 default-images:
   profile: https://mvp.microsoft.com/ko-kr/PublicProfile/Photo/5000853
 cloud:
   aws:
-    prefix: xxxix
+    prefix: xxxx
     region:
-      static: xxxix
+      static: xxxx
     credentials:
-      accessKey: xxxix
-      secretkey: xxxix
+      accessKey: xxxx
+      secretkey: xxxx
     s3:
-      bucket: xxxix
+      bucket: xxxx
 

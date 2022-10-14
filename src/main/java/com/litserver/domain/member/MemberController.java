@@ -2,6 +2,7 @@ package com.litserver.domain.member;
 
 
 import com.litserver.domain.auth.dto.TokenRequestDto;
+import com.litserver.domain.member.dto.LoginDto;
 import com.litserver.domain.member.dto.MemberInfoUpdateDto;
 import com.litserver.domain.member.dto.SignDto;
 import com.litserver.global.common.ResponseHandler;
@@ -29,8 +30,8 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid SignDto signDto) {
-        return ResponseHandler.ok(memberService.login(signDto));
+    public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
+        return ResponseHandler.ok(memberService.login(loginDto));
     }
 
     // 토큰 재발급

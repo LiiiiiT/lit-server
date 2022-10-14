@@ -11,10 +11,11 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "friend")
+@Entity
 public class Friend extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "friend_id")
     private Long id;
 
     // 요청 상태 (요청시 REQUEST, 수락했을 시 FRIEND)
@@ -24,12 +25,12 @@ public class Friend extends BaseTimeEntity {
 
     // 친구 요청한 member
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_member_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Member fromMember;
 
     // 친구 요청받는 member
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_member_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Member toMember;
 
     @Builder

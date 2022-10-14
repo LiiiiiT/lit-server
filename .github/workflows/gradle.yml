@@ -78,7 +78,7 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.AWS_PORT }}
         script: |
-          docker rmi $(docker images -f "dangling=true" -q)
           docker pull ${{ secrets.DOCKER_USER }}/lit-prod
           docker stop server
           docker run -d --network boot-db --rm --name server -p 8080:8080 ${{ secrets.DOCKER_USER }}/lit-prod
+          docker rmi $(docker images -f "dangling=true" -q)

@@ -1,13 +1,9 @@
 package com.litserver.domain.member.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.persistence.Embedded;
 import javax.validation.constraints.NotBlank;
 
 @Jacksonized
@@ -15,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class SignDto {
+public class LoginDto {
     @NotBlank
     String email;
     @NotBlank

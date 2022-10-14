@@ -15,6 +15,7 @@ import javax.persistence.*;
 public class Alarm extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "alarm_id")
     private Long id;
 
     @Column(nullable = false)

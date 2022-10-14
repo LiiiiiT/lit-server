@@ -1,4 +1,4 @@
-package com.litserver.domain.member;
+package com.litserver.global.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

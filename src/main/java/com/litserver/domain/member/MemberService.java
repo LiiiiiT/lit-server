@@ -5,6 +5,7 @@ import com.litserver.domain.auth.dto.TokenRequestDto;
 import com.litserver.domain.auth.dto.TokenResponseDto;
 import com.litserver.domain.friend.FriendRepository;
 import com.litserver.domain.friend.FriendState;
+import com.litserver.domain.member.dto.LoginDto;
 import com.litserver.domain.member.dto.MemberInfoResponseDto;
 import com.litserver.domain.member.dto.MemberInfoUpdateDto;
 import com.litserver.domain.member.dto.SignDto;
@@ -16,6 +17,7 @@ import com.litserver.global.exception.runtime.RefreshTokenNotFoundException;
 import com.litserver.global.exception.runtime.UnAuthorizedException;
 import com.litserver.global.jwt.JwtExceptionCode;
 import com.litserver.global.jwt.JwtProvider;
+import com.litserver.global.redis.RedisService;
 import com.litserver.global.util.ImageUtil;
 import com.litserver.global.util.S3Util;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -57,15 +59,15 @@ public class MemberService {
     @Transactional
     public String signUp(SignDto signDto) {
         checkEmail(signDto.getEmail());
-        return memberRepository.save(toMember(signDto))
+        return memberRepository.save(new Member(signDto, bCryptPasswordEncoder, DEFAULT_PROFILE_IMAGE_URL))
                 .getNickname();
     }
 
     @Transactional
-    public TokenResponseDto login(SignDto signDto) {
+    public TokenResponseDto login(LoginDto loginDto) {
         // Login 화면에서 입력 받은 email/pw 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                signDto.getEmail(), signDto.getPassword());
+                loginDto.getEmail(), loginDto.getPassword());
 
         // 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         // authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
@@ -219,15 +221,6 @@ public class MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateUserInfoException("사용중인 이메일입니다. 로그인 해주세요.");
         }
-    }
-
-    private Member toMember(SignDto signDto) {
-        return Member.builder()
-                .email(signDto.getEmail())
-                .password(bCryptPasswordEncoder.encode(signDto.getPassword()))
-                .nickname(signDto.getEmail().split("@")[0])
-                .profileImageUrl(DEFAULT_PROFILE_IMAGE_URL)
-                .build();
     }
 
     // 자기 자신, 혹은 친구 관계인지 검증
