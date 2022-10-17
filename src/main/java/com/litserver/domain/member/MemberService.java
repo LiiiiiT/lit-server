@@ -120,10 +120,10 @@ public class MemberService {
             // 새로운 이미지를 WebP로 변환
             var createdImageFile = imageUtil.convertToWebp(memberInfoUpdateDto.getImageFile());
             // 리사이즈 후 원본 삭제
-            var thumbnail = imageUtil.resizeImage(createdImageFile);
-            createdImageFile.delete();
+//            var thumbnail = imageUtil.resizeImage(createdImageFile);
+//            createdImageFile.delete();
             // 업로드 요청
-            var putRequest = s3Util.createPutObjectRequest(thumbnail);
+            var putRequest = s3Util.createPutObjectRequest(createdImageFile);
             // 업로드, 삭제 요청 실행
             profileImageUrl = s3Util.executePutRequest(putRequest);
             s3Util.executeDeleteRequest(deleteRequest);
