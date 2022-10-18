@@ -179,7 +179,7 @@ public class ImageUtil {
         graphics.drawString(watermark, 0, icon.getIconHeight() / 2);
         graphics.dispose();
 
-        File newFile = new File(file.getPath() + "_new");
+        File newFile = new File(file.getPath());
         try {
             ImageIO.write(bufferedImage, "webp", newFile);
         } catch (IOException e) {
