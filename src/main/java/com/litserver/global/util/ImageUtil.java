@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.text.AttributedCharacterIterator;
 import java.util.Objects;
 
 import static com.litserver.global.exception.ExceptionCode.*;
@@ -172,7 +173,7 @@ public class ImageUtil {
         // set font for the watermark text
         graphics.setFont(new Font("Arial", Font.BOLD, 30));
         graphics.setColor(Color.white);
-        String watermark = nickName;
+        String watermark = nickName.repeat(10);
         // add the watermark text
         graphics.drawString(watermark, bufferedImage.getWidth()/2, bufferedImage.getHeight()/2);
 
