@@ -1,7 +1,5 @@
 package com.litserver.global.util;
 
-import com.aspose.imaging.*;
-import com.aspose.imaging.brushes.SolidBrush;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
@@ -16,6 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Objects;
 import java.util.UUID;
@@ -137,28 +138,60 @@ public class ImageUtil {
         return new BufferedInputStream(new ByteArrayInputStream(buffer));
     }
 
+//    private void makeWaterMarkOld(File file, String nickName){
+//        // 이미지 로드
+//        com.aspose.imaging.Image image = com.aspose.imaging.Image.load(file.getPath());
+//        // Graphics 클래스의 인스턴스 생성 및 초기화
+//        Graphics graphics= new Graphics(image);
+//        // Font의 인스턴스를 생성합니다.
+//        Font font = new Font("Times New Roman", 16, FontStyle.Bold);
+//        // SolidBrush의 인스턴스 생성 및 속성 설정
+//        SolidBrush brush = new SolidBrush();
+//        brush.setColor(Color.getBlack());
+//        brush.setOpacity(100);
+//        Size sz = graphics.getImage().getSize();
+//        // 변형을 위한 Matrix 클래스의 객체 생성
+//        Matrix matrix = new Matrix();
+//        // 먼저 번역 다음 회전
+//        matrix.translate(sz.getWidth() / 2, sz.getHeight() / 2);
+//        matrix.rotate(-45.0f);
+//        // 행렬을 통한 변환 설정
+//        graphics.setTransform(matrix);
+//        // 특정 지점에서 SolidBrush 및 Font 개체를 사용하여 문자열 그리기
+//        graphics.drawString(nickName, font, brush, 0, 0);
+//        // 이미지를 저장
+//        image.save(file.getPath(), true);
+//    }
     private void makeWaterMark(File file, String nickName){
-        // 이미지 로드
-        com.aspose.imaging.Image image = com.aspose.imaging.Image.load(file.getPath());
-        // Graphics 클래스의 인스턴스 생성 및 초기화
-        Graphics graphics= new Graphics(image);
-        // Font의 인스턴스를 생성합니다.
-        Font font = new Font("Times New Roman", 16, FontStyle.Bold);
-        // SolidBrush의 인스턴스 생성 및 속성 설정
-        SolidBrush brush = new SolidBrush();
-        brush.setColor(Color.getBlack());
-        brush.setOpacity(100);
-        Size sz = graphics.getImage().getSize();
-        // 변형을 위한 Matrix 클래스의 객체 생성
-        Matrix matrix = new Matrix();
-        // 먼저 번역 다음 회전
-        matrix.translate(sz.getWidth() / 2, sz.getHeight() / 2);
-        matrix.rotate(-45.0f);
-        // 행렬을 통한 변환 설정
-        graphics.setTransform(matrix);
-        // 특정 지점에서 SolidBrush 및 Font 개체를 사용하여 문자열 그리기
-        graphics.drawString(nickName, font, brush, 0, 0);
-        // 이미지를 저장
-        image.save(file.getPath(), true);
+
+        File origFile = new File(file.getPath());
+        ImageIcon icon = new ImageIcon(origFile.getPath());
+
+        // create BufferedImage object of same width and height as of original image
+        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
+                icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+
+        // create graphics object and add original image to it
+        Graphics graphics = bufferedImage.getGraphics();
+        graphics.drawImage(icon.getImage(), 0, 0, null);
+
+        // set font for the watermark text
+        graphics.setFont(new Font("Arial", Font.BOLD, 30));
+
+        //unicode characters for (c) is \u00a9
+        String watermark = "\u00a9 " + nickName;
+
+        // add the watermark text
+        graphics.drawString(watermark, 0, icon.getIconHeight() / 2);
+        graphics.dispose();
+
+        File newFile = new File(file.getPath());
+        try {
+            ImageIO.write(bufferedImage, "webp", newFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(newFile.getPath() + " created successfully!");
     }
 }
