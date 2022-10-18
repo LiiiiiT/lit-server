@@ -174,9 +174,12 @@ public class ImageUtil {
 
         //unicode characters for (c) is \u00a9
         String watermark = nickName;
-
+        System.out.println(icon.getIconWidth());
+        System.out.println(icon.getIconHeight());
+        System.out.println(bufferedImage.getWidth());
+        System.out.println(bufferedImage.getHeight());
         // add the watermark text
-        graphics.drawString(watermark, icon.getIconWidth()/2, icon.getIconHeight()/2);
+        graphics.drawString(watermark, bufferedImage.getWidth()/2, bufferedImage.getHeight()/2);
         graphics.dispose();
 
         File newFile = new File(file.getPath());
