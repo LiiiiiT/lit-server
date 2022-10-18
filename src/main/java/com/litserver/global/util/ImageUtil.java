@@ -160,16 +160,12 @@ public class ImageUtil {
 //        // 이미지를 저장
 //        image.save(file.getPath(), true);
 //    }
-    private void makeWaterMark(File file, String nickName){
-        System.out.println(file.getPath());
+    private void makeWaterMark(File file, String nickName) throws IOException {
         ImageIcon icon = new ImageIcon(file.getPath());
-        System.out.println(icon);
-        System.out.println(icon.getIconWidth());
-        System.out.println(icon.getIconHeight());
         // create BufferedImage object of same width and height as of original image
-        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
-                icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
-
+//        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
+//                icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = ImageIO.read(new BufferedInputStream(new FileInputStream(file)));
         // create graphics object and add original image to it
         Graphics graphics = bufferedImage.getGraphics();
         graphics.drawImage(icon.getImage(), 0, 0, null);
