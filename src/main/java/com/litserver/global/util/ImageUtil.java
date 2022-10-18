@@ -171,15 +171,18 @@ public class ImageUtil {
 
         // set font for the watermark text
         graphics.setFont(new Font("Arial", Font.BOLD, 30));
-
-        //unicode characters for (c) is \u00a9
+        graphics.setColor(Color.white);
+        graphics.fillOval(0,0,bufferedImage.getWidth(), bufferedImage.getHeight());
         String watermark = nickName;
         System.out.println(icon.getIconWidth());
         System.out.println(icon.getIconHeight());
         System.out.println(bufferedImage.getWidth());
         System.out.println(bufferedImage.getHeight());
+
+
         // add the watermark text
         graphics.drawString(watermark, bufferedImage.getWidth()/2, bufferedImage.getHeight()/2);
+
         graphics.dispose();
 
         File newFile = new File(file.getPath());
