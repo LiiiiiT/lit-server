@@ -173,10 +173,10 @@ public class ImageUtil {
         graphics.setFont(new Font("Arial", Font.BOLD, 30));
 
         //unicode characters for (c) is \u00a9
-        String watermark = "\u00a9 " + nickName;
+        String watermark = nickName;
 
         // add the watermark text
-        graphics.drawString(watermark, 0, icon.getIconHeight() / 2);
+        graphics.drawString(watermark, icon.getIconWidth()/2, icon.getIconHeight()/2);
         graphics.dispose();
 
         File newFile = new File(file.getPath());
