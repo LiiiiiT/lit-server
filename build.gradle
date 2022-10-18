@@ -19,6 +19,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://repository.aspose.com/repo/"
+    }
 }
 
 dependencies {
@@ -63,6 +66,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.json/json
     implementation group: 'org.json', name: 'json', version: '20220320'
 
+    // WarterMark
+    implementation group: 'com.aspose', name: 'aspose-imaging', version: '20.12', classifier: 'jdk16'
+
     implementation 'org.slf4j:slf4j-api:2.0.3'
     implementation 'org.slf4j:slf4j-simple:2.0.3'
 
@@ -70,9 +76,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
+//    testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
 

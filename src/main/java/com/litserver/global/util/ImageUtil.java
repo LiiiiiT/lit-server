@@ -1,5 +1,7 @@
 package com.litserver.global.util;
 
+import com.aspose.imaging.*;
+import com.aspose.imaging.brushes.SolidBrush;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
@@ -43,11 +45,11 @@ public class ImageUtil {
         }
     }
 
-    public File convertToWebp(MultipartFile originalFile) {
+    public File convertToWebp(MultipartFile originalFile, String nickName) {
         checkExtension(Objects.requireNonNull(originalFile.getOriginalFilename()).toLowerCase());
         try (InputStream inputStream = new BufferedInputStream(originalFile.getInputStream())) {
             // 인코딩할 빈 파일
-            File tempFile = new File(UUID.randomUUID() + ".webp");
+            File tempFile = new File(nickName + UUID.randomUUID() + ".webp");
             // Thumbnailator로 리사이징
             copyInputStream(inputStream);
             InputStream is = getBufferedInputStream();
@@ -61,6 +63,8 @@ public class ImageUtil {
                     .outputFormat("webp")
                     .toFile(tempFile);
             is.close();
+            // 워터마크
+            makeWaterMark(tempFile, nickName);
             return tempFile;
         } catch (IOException e) {
             log.error("failed to convertToWebp(): " + originalFile.getName());
@@ -131,5 +135,30 @@ public class ImageUtil {
 
     private InputStream getBufferedInputStream() {
         return new BufferedInputStream(new ByteArrayInputStream(buffer));
+    }
+
+    private void makeWaterMark(File file, String nickName){
+        // 이미지 로드
+        com.aspose.imaging.Image image = com.aspose.imaging.Image.load(file.getPath());
+        // Graphics 클래스의 인스턴스 생성 및 초기화
+        Graphics graphics= new Graphics(image);
+        // Font의 인스턴스를 생성합니다.
+        Font font = new Font("Times New Roman", 16, FontStyle.Bold);
+        // SolidBrush의 인스턴스 생성 및 속성 설정
+        SolidBrush brush = new SolidBrush();
+        brush.setColor(Color.getBlack());
+        brush.setOpacity(100);
+        Size sz = graphics.getImage().getSize();
+        // 변형을 위한 Matrix 클래스의 객체 생성
+        Matrix matrix = new Matrix();
+        // 먼저 번역 다음 회전
+        matrix.translate(sz.getWidth() / 2, sz.getHeight() / 2);
+        matrix.rotate(-45.0f);
+        // 행렬을 통한 변환 설정
+        graphics.setTransform(matrix);
+        // 특정 지점에서 SolidBrush 및 Font 개체를 사용하여 문자열 그리기
+        graphics.drawString(nickName, font, brush, 0, 0);
+        // 이미지를 저장
+        image.save(file.getPath(), true);
     }
 }

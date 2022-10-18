@@ -118,7 +118,8 @@ public class MemberService {
             // 기존 이미지 삭제 요청
             var deleteRequest = s3Util.createDeleteRequest(member.getProfileImageUrl());
             // 새로운 이미지를 WebP로 변환
-            var createdImageFile = imageUtil.convertToWebp(memberInfoUpdateDto.getImageFile());
+            var createdImageFile = imageUtil.convertToWebp(memberInfoUpdateDto.getImageFile(), memberInfoUpdateDto.getNickname());
+
             // 리사이즈 후 원본 삭제
 //            var thumbnail = imageUtil.resizeImage(createdImageFile);
 //            createdImageFile.delete();
