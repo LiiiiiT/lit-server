@@ -173,9 +173,9 @@ public class ImageUtil {
         // set font for the watermark text
         graphics.setFont(new Font("Arial", Font.BOLD, 30));
         graphics.setColor(Color.white);
-        String watermark = nickName.repeat(10);
+        String watermark = (nickName+" ").repeat(10);
         // add the watermark text
-        graphics.drawString(watermark, bufferedImage.getWidth()/2, bufferedImage.getHeight()/2);
+        graphics.drawString(watermark, 0, bufferedImage.getHeight()/2);
 
         graphics.dispose();
 
