@@ -9,7 +9,6 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.litserver.global.exception.runtime.image.ImageProcessException;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.geometry.Positions;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,38 +18,37 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Objects;
-import java.util.UUID;
 
 import static com.litserver.global.exception.ExceptionCode.*;
 @Slf4j
 @Component
 public class ImageUtil {
     // 리사이징 할 파일 크기
-    private static final int THUMBNAIL_WIDTH = 200;
-    private static final int THUMBNAIL_HEIGHT = 200;
+//    private static final int THUMBNAIL_WIDTH = 200;
+//    private static final int THUMBNAIL_HEIGHT = 200;
     private byte[] buffer;
 
-    public File resizeImage(File originalFile) {
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(originalFile))) {
-            // 리사이즈용 임시 파일 생성
-            File tempFile = new File("thumbnail_" + UUID.randomUUID() + ".webp");
-            // 재사용할 수 있게 Byte 배열에 저장
-            // Thumbnailator로 리사이징
-            Thumbnails.of(inputStream)
-                    .size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
-                    .crop(Positions.CENTER)
-                    .toFile(tempFile);
-            return tempFile;
-        } catch (IOException e) {
-            throw new ImageProcessException(IMAGE_RESIZE_FAILURE, e.getLocalizedMessage(), e);
-        }
-    }
+//    public File resizeImage(File originalFile) {
+//        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(originalFile))) {
+//            // 리사이즈용 임시 파일 생성
+//            File tempFile = new File("thumbnail_" + UUID.randomUUID() + ".webp");
+//            // 재사용할 수 있게 Byte 배열에 저장
+//            // Thumbnailator로 리사이징
+//            Thumbnails.of(inputStream)
+//                    .size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+//                    .crop(Positions.CENTER)
+//                    .toFile(tempFile);
+//            return tempFile;
+//        } catch (IOException e) {
+//            throw new ImageProcessException(IMAGE_RESIZE_FAILURE, e.getLocalizedMessage(), e);
+//        }
+//    }
 
     public File convertToWebp(MultipartFile originalFile, String nickName) {
         checkExtension(Objects.requireNonNull(originalFile.getOriginalFilename()).toLowerCase());
         try (InputStream inputStream = new BufferedInputStream(originalFile.getInputStream())) {
             // 인코딩할 빈 파일
-            File tempFile = new File(nickName + UUID.randomUUID() + ".webp");
+            File tempFile = new File(nickName + "_" + System.currentTimeMillis() + ".webp");
             // Thumbnailator로 리사이징
             copyInputStream(inputStream);
             InputStream is = getBufferedInputStream();
@@ -164,8 +162,7 @@ public class ImageUtil {
 //    }
     private void makeWaterMark(File file, String nickName){
 
-        File origFile = new File(file.getPath());
-        ImageIcon icon = new ImageIcon(origFile.getPath());
+        ImageIcon icon = new ImageIcon(file.getPath());
 
         // create BufferedImage object of same width and height as of original image
         BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
