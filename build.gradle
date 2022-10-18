@@ -67,7 +67,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20220320'
 
     // WarterMark
-    implementation group: 'com.aspose', name: 'aspose-imaging', version: '20.12', classifier: 'jdk16'
+//    implementation group: 'com.aspose', name: 'aspose-imaging', version: '20.12', classifier: 'jdk16'
 
     implementation 'org.slf4j:slf4j-api:2.0.3'
     implementation 'org.slf4j:slf4j-simple:2.0.3'
