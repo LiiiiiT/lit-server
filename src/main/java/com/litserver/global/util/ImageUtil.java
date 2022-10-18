@@ -63,8 +63,7 @@ public class ImageUtil {
                     .toFile(tempFile);
             is.close();
             // 워터마크
-            makeWaterMark(tempFile, nickName);
-            return tempFile;
+            return makeWaterMark(tempFile, nickName);
         } catch (IOException e) {
             log.error("failed to convertToWebp(): " + originalFile.getName());
             throw new ImageProcessException(IMAGE_CONVERT_FAILURE, e.getLocalizedMessage(), e);
@@ -160,7 +159,7 @@ public class ImageUtil {
 //        // 이미지를 저장
 //        image.save(file.getPath(), true);
 //    }
-    private void makeWaterMark(File file, String nickName) throws IOException {
+    private File makeWaterMark(File file, String nickName) throws IOException {
         ImageIcon icon = new ImageIcon(file.getPath());
         // create BufferedImage object of same width and height as of original image
 //        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(),
@@ -186,7 +185,7 @@ public class ImageUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         System.out.println(newFile.getPath() + " created successfully!");
+        return newFile;
     }
 }
