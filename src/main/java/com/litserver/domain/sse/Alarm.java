@@ -10,7 +10,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "alarm")
 @Builder
 public class Alarm extends BaseTimeEntity {
     @Id
