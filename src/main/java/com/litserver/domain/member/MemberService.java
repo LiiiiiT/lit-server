@@ -5,10 +5,7 @@ import com.litserver.domain.auth.dto.TokenRequestDto;
 import com.litserver.domain.auth.dto.TokenResponseDto;
 import com.litserver.domain.friend.FriendRepository;
 import com.litserver.domain.friend.FriendState;
-import com.litserver.domain.member.dto.LoginDto;
-import com.litserver.domain.member.dto.MemberInfoResponseDto;
-import com.litserver.domain.member.dto.MemberInfoUpdateDto;
-import com.litserver.domain.member.dto.SignDto;
+import com.litserver.domain.member.dto.*;
 import com.litserver.domain.member.exception.DuplicateUserInfoException;
 import com.litserver.domain.sse.Alarm;
 import com.litserver.domain.sse.AlarmRepository;
@@ -35,8 +32,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -48,6 +47,8 @@ public class MemberService {
     private String DEFAULT_PROFILE_IMAGE_URL;
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
+    private final ProfileImageRepository profileImageRepository;
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
@@ -245,5 +246,26 @@ public class MemberService {
                 targetId, currentMemberId, FriendState.FRIEND)
                 || friendRepository.existsByFromMemberIdAndToMemberIdAndFriendState(
                 currentMemberId, targetId, FriendState.FRIEND);
+    }
+
+    @Transactional
+    public long test(TestDto testDto) {
+        checkEmail(testDto.getEmail());
+        Member member = memberRepository.save(new Member(testDto, bCryptPasswordEncoder));
+        List<ProfileImage> profileImages = new ArrayList<>();
+        for(MultipartFile multipartFile : testDto.getImageFile()) {
+            // 새로운 이미지를 WebP로 변환
+            var createdImageFile = imageUtil.convertToWebp(multipartFile, testDto.getNickname());
+
+            // 리사이즈 후 원본 삭제
+//            var thumbnail = imageUtil.resizeImage(createdImageFile);
+//            createdImageFile.delete();
+            // 업로드 요청
+            var putRequest = s3Util.createPutObjectRequest(createdImageFile);
+            // 업로드, 삭제 요청 실행
+            String profileImageUrl = s3Util.executePutRequest(putRequest);
+            profileImages.add(new ProfileImage(member, profileImageUrl));
+        }
+        return profileImageRepository.saveAll(profileImages).stream().count();
     }
 }

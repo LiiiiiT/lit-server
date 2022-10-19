@@ -3,6 +3,7 @@ package com.litserver.domain.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.litserver.domain.friend.Friend;
 import com.litserver.domain.member.dto.SignDto;
+import com.litserver.domain.member.dto.TestDto;
 import com.litserver.domain.sse.Alarm;
 import com.litserver.global.common.BaseTimeEntity;
 import lombok.*;
@@ -40,6 +41,11 @@ public class Member extends BaseTimeEntity {
     @NotBlank
     private String profileImageUrl;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "memberId",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProfileImage> profileImages = new ArrayList<>();
+
     @Column
     @NotBlank
     @JsonIgnore
@@ -74,6 +80,14 @@ public class Member extends BaseTimeEntity {
         this.profileImageUrl = DEFAULT_PROFILE_IMAGE_URL;
         this.memberState = MemberState.WAIT;
     }
+    public Member (TestDto testDto, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.email = testDto.getEmail();
+        this.password = bCryptPasswordEncoder.encode(testDto.getPassword());
+        this.nickname = testDto==null ? testDto.getEmail().split("@")[0] : testDto.getNickname();
+        this.profileImageUrl = "test";
+        this.memberState = MemberState.WAIT;
+    }
+
     public void updateInfo(String nickname, String profileImageUrl) {
         if (nickname != null) {
             this.nickname = nickname;
