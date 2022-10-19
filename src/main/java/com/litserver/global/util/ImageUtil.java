@@ -13,16 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
-import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.util.Objects;
 
 import static com.litserver.global.exception.ExceptionCode.*;
@@ -69,7 +62,7 @@ public class ImageUtil {
                     .toFile(tempFile);
             is.close();
             // 워터마크
-            return makeWaterMarkNew(tempFile, nickName);
+            return makeWaterMark(tempFile, nickName);
         } catch (IOException e) {
             log.error("failed to convertToWebp(): " + originalFile.getName());
             throw new ImageProcessException(IMAGE_CONVERT_FAILURE, e.getLocalizedMessage(), e);
@@ -158,39 +151,6 @@ public class ImageUtil {
             e.printStackTrace();
         }
         System.out.println(newFile.getPath() + " created successfully!");
-        return newFile;
-    }
-
-    private File makeWaterMarkNew(File file, String nickName) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(new BufferedInputStream(new FileInputStream(file)));
-        // create graphics object and add original image to it
-        Graphics graphics = bufferedImage.getGraphics();
-        // set font for the watermark text
-
-        AttributedString attributedString = new AttributedString(nickName);
-        attributedString.addAttribute(TextAttribute.FONT, (Font) UIManager.get("Label.font"));
-        Color color = (Color) UIManager.get("Label.foreground");
-
-        attributedString.addAttribute(TextAttribute.FOREGROUND, color);
-
-        Graphics2D g2d = (Graphics2D) graphics;
-
-        int width = bufferedImage.getWidth();
-        int x = 10;
-        int y = 30;
-
-        AttributedCharacterIterator characterIterator = attributedString.getIterator();
-        FontRenderContext fontRenderContext = g2d.getFontRenderContext();
-        LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator, fontRenderContext);
-        while (measurer.getPosition() < characterIterator.getEndIndex()) {
-            TextLayout textLayout = measurer.nextLayout(width);
-            y += textLayout.getAscent();
-            textLayout.draw(g2d, x, y);//   w   ww    . d e  m    o2  s   . c   o   m
-            y += textLayout.getDescent() + textLayout.getLeading();
-        }
-        graphics.drawString(characterIterator, 0, bufferedImage.getHeight()/2);
-        graphics.dispose();
-        File newFile = new File(file.getPath());
         return newFile;
     }
 }
