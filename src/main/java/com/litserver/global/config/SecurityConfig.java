@@ -84,6 +84,7 @@ public class SecurityConfig {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/oauth2/authorization/**").permitAll()
                 .antMatchers("/api/health-check").permitAll()
+                .antMatchers("/api/members/test").permitAll()
 
                 // 나머지는 전부 인증 필요
                 .anyRequest().authenticated()

@@ -5,6 +5,7 @@ import com.litserver.domain.auth.dto.TokenRequestDto;
 import com.litserver.domain.member.dto.LoginDto;
 import com.litserver.domain.member.dto.MemberInfoUpdateDto;
 import com.litserver.domain.member.dto.SignDto;
+import com.litserver.domain.member.dto.TestDto;
 import com.litserver.global.common.ResponseHandler;
 import com.litserver.global.exception.runtime.UnAuthorizedException;
 import com.litserver.global.util.SecurityUtil;
@@ -61,7 +62,10 @@ public class MemberController {
         }
         return ResponseHandler.ok(memberService.updateMemberInfo(currentMemberId, targetId, memberInfoUpdateDto));
     }
-
+    @PostMapping("/test")
+    public ResponseEntity<Object> test(TestDto testDto) {
+        return ResponseHandler.ok(memberService.test(testDto));
+    }
     // 로그아웃
     @GetMapping("/logout")
     public ResponseEntity<Object> logout() {
