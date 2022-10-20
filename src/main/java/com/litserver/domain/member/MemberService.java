@@ -54,11 +54,14 @@ public class MemberService {
     private final AlarmRepository alarmRepository;
     private final MemberImageService memberImageService;
     @Transactional
-    public long signUp(SignDto signDto) {
+    public Member signUp(SignDto signDto) {
         checkEmail(signDto.getEmail());
         Member member = memberRepository.save(new Member(signDto, bCryptPasswordEncoder));
-        List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto, member, null);
-        return profileImageRepository.saveAll(profileImages).size();
+        if(signDto.getImageFileList().size()!=0){
+            List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto, member, new ArrayList<>());
+            profileImageRepository.saveAll(profileImages).size();
+        }
+        return member;
     }
 
 

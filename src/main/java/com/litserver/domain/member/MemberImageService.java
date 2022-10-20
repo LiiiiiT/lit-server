@@ -6,7 +6,6 @@ import com.litserver.global.util.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +16,16 @@ public class MemberImageService {
     private final S3Util s3Util;
     private final ImageUtil imageUtil;
     private final ProfileImageRepository profileImageRepository;
-    public List<ProfileImage> addProfileImagesInS3(SignDto signDto, Member member, List<Integer> ImageOrder) {
+    public List<ProfileImage> addProfileImagesInS3(SignDto signDto, Member member, List<Integer> imageOrderList) {
         List<ProfileImage> profileImages = new ArrayList<>();
-        for(var multipartFile : signDto.getImageFile()) {
+        for(int i=0; i<signDto.getImageFileList().size(); i++) {
             // 이미지를 WebP로 변환
-            var createdImageFile = imageUtil.convertImageToWebp(multipartFile, signDto.getEmail(), signDto.getNickname());
+            var createdImageFile = imageUtil.convertImageToWebp(signDto.getImageFileList().get(i), signDto.getEmail(), signDto.getNickname());
             // 업로드 요청
             var putRequest = s3Util.createPutObjectRequest(createdImageFile);
             // 업로드 요청 실행
             String profileImageUrl = s3Util.executePutRequest(putRequest);
-            profileImages.add(new ProfileImage(member, profileImageUrl, profileImages.size()));
+            profileImages.add(new ProfileImage(member, profileImageUrl, imageOrderList.size()==0?profileImages.size():imageOrderList.get(i)));
         }
         return profileImages;
     }
