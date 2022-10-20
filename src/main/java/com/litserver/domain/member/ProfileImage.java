@@ -1,6 +1,5 @@
 package com.litserver.domain.member;
 
-import com.litserver.domain.member.dto.TestDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +24,13 @@ public class ProfileImage {
     @NotBlank
     private String profileImageUrl;
 
-    public ProfileImage(Member member, String profileImageUrl) {
+    @Column
+    @NotBlank
+    private int imageOrder;
+
+    public ProfileImage(Member member, String profileImageUrl, int imageOrder) {
         this.memberId = member;
         this.profileImageUrl = profileImageUrl;
+        this.imageOrder = imageOrder;
     }
 }

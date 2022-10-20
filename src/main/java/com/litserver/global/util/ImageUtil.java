@@ -43,11 +43,11 @@ public class ImageUtil {
 //        }
 //    }
 
-    public File convertToWebp(MultipartFile originalFile, String nickName) {
+    public File convertImageToWebp(MultipartFile originalFile, String email, String nickName) {
         checkExtension(Objects.requireNonNull(originalFile.getOriginalFilename()).toLowerCase());
         try (InputStream inputStream = new BufferedInputStream(originalFile.getInputStream())) {
             // 인코딩할 빈 파일
-            File tempFile = new File(nickName + "_" + System.currentTimeMillis() + ".webp");
+            File tempFile = new File(email + "_" + System.currentTimeMillis() + ".webp");
             // Thumbnailator로 리사이징
             copyInputStream(inputStream);
             InputStream is = getBufferedInputStream();

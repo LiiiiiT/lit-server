@@ -3,7 +3,6 @@ package com.litserver.domain.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.litserver.domain.friend.Friend;
 import com.litserver.domain.member.dto.SignDto;
-import com.litserver.domain.member.dto.TestDto;
 import com.litserver.domain.sse.Alarm;
 import com.litserver.global.common.BaseTimeEntity;
 import lombok.*;
@@ -12,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +38,7 @@ public class Member extends BaseTimeEntity {
     @JsonIgnore
     private String password;
     @Column
-    @NotBlank
-    private String profileImageUrl;
+    private String profile;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "memberId",
             cascade = CascadeType.ALL, orphanRemoval = true)
@@ -73,29 +72,12 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MemberState memberState;
 
-    public Member (SignDto signDto, BCryptPasswordEncoder bCryptPasswordEncoder, String DEFAULT_PROFILE_IMAGE_URL) {
+    public Member (SignDto signDto, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.email = signDto.getEmail();
         this.password = bCryptPasswordEncoder.encode(signDto.getPassword());
-        this.nickname = signDto.getEmail().split("@")[0];
-        this.profileImageUrl = DEFAULT_PROFILE_IMAGE_URL;
+        this.nickname = signDto ==null ? signDto.getEmail().split("@")[0] : signDto.getNickname();
+        this.profile = signDto.getProfile();
         this.memberState = MemberState.WAIT;
     }
-    public Member (TestDto testDto, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.email = testDto.getEmail();
-        this.password = bCryptPasswordEncoder.encode(testDto.getPassword());
-        this.nickname = testDto==null ? testDto.getEmail().split("@")[0] : testDto.getNickname();
-        this.profileImageUrl = "test";
-        this.memberState = MemberState.WAIT;
-    }
-
-    public void updateInfo(String nickname, String profileImageUrl) {
-        if (nickname != null) {
-            this.nickname = nickname;
-        }
-        if (profileImageUrl != null) {
-            this.profileImageUrl = profileImageUrl;
-        }
-    }
-
 }
 

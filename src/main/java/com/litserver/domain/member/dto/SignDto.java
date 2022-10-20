@@ -6,9 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Embedded;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Jacksonized
 @Getter
@@ -16,8 +17,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class SignDto {
+    String nickname;
     @NotBlank
     String email;
     @NotBlank
     String password;
+    String profile;
+    List<MultipartFile> imageFile;
 }

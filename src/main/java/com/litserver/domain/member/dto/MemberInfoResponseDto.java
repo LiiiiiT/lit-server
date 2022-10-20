@@ -17,5 +17,5 @@ public class MemberInfoResponseDto {
     long memberId;
     String nickname;
     String email;
-    String profileImageUrl;
+    String profile;
 }

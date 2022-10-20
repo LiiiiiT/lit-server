@@ -15,8 +15,7 @@ import com.litserver.global.exception.runtime.UnAuthorizedException;
 import com.litserver.global.jwt.JwtExceptionCode;
 import com.litserver.global.jwt.JwtProvider;
 import com.litserver.global.redis.RedisService;
-import com.litserver.global.util.ImageUtil;
-import com.litserver.global.util.S3Util;
+import com.litserver.global.util.SecurityUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -32,7 +31,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -48,28 +46,27 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
     private final ProfileImageRepository profileImageRepository;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
-    private final S3Util s3Util;
     private final RedisService redisService;
     private final RedisTemplate<String, String> redisTemplate;
-    private final ImageUtil imageUtil;
     private final AlarmRepository alarmRepository;
+    private final MemberImageService memberImageService;
     @Transactional
-    public String signUp(SignDto signDto) {
+    public long signUp(SignDto signDto) {
         checkEmail(signDto.getEmail());
-        return memberRepository.save(new Member(signDto, bCryptPasswordEncoder, DEFAULT_PROFILE_IMAGE_URL))
-                .getNickname();
+        Member member = memberRepository.save(new Member(signDto, bCryptPasswordEncoder));
+        List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto, member, null);
+        return profileImageRepository.saveAll(profileImages).size();
     }
+
+
 
     @Transactional
     public TokenResponseDto login(LoginDto loginDto) {
         // Login 화면에서 입력 받은 email/pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(), loginDto.getPassword());
-
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         // 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         // authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
         Authentication authentication;
@@ -79,59 +76,48 @@ public class MemberService {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("아이디, 혹은 비밀번호가 잘못되었습니다.");
         }
-
         // 인증 정보를 사용해 JWT 토큰 생성
-        TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto(
-                (CustomUserDetails) authentication.getPrincipal());
-
+        TokenResponseDto tokenResponseDto = jwtProvider.createTokenDto((CustomUserDetails) authentication.getPrincipal());
         // RefreshToken 저장
         String refreshToken = tokenResponseDto.getRefreshToken();
-        redisService.setDataWithExpiration("RT:" + authentication.getName(), refreshToken,
-                tokenResponseDto.getRefreshTokenLifetimeInMs());
-
+        redisService.setDataWithExpiration("JWT:" + authentication.getName(), refreshToken, tokenResponseDto.getRefreshTokenLifetimeInMs());
         // 토큰 발급
         return tokenResponseDto;
     }
-
     @Transactional(readOnly = true)
-    public MemberInfoResponseDto getMemberInfo(long currentMemberId, long targetId) {
-        if (currentMemberId != targetId) {
-            checkAuthorization(currentMemberId, targetId);
-        } else {
-            checkSelfAuthorization(currentMemberId, targetId);
-        }
-        Member member = getMember(targetId);
+    public MemberInfoResponseDto getMemberInfo() {
+        Member member = findMember(SecurityUtil.getCurrentMemberId());
         return MemberInfoResponseDto.builder()
-                .memberId(targetId)
+                .memberId(member.getId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
-                .profileImageUrl(member.getProfileImageUrl())
+                .profile(member.getProfile())
                 .build();
     }
 
+    // TODO: 2022/10/19 사진 순서 만들기
     @Transactional
-    public long updateMemberInfo(long currentMemberId, long targetId, MemberInfoUpdateDto memberInfoUpdateDto) {
-        checkSelfAuthorization(currentMemberId, targetId);
-        Member member = getMember(currentMemberId);
-        String profileImageUrl = member.getProfileImageUrl();
-        // 변경할 프로필 이미지가 있으면
-        if (memberInfoUpdateDto.getImageFile() != null && !memberInfoUpdateDto.getImageFile().isEmpty()) {
-            // 기존 이미지 삭제 요청
-            var deleteRequest = s3Util.createDeleteRequest(member.getProfileImageUrl());
-            // 새로운 이미지를 WebP로 변환
-            var createdImageFile = imageUtil.convertToWebp(memberInfoUpdateDto.getImageFile(), memberInfoUpdateDto.getNickname());
-
-            // 리사이즈 후 원본 삭제
-//            var thumbnail = imageUtil.resizeImage(createdImageFile);
-//            createdImageFile.delete();
-            // 업로드 요청
-            var putRequest = s3Util.createPutObjectRequest(createdImageFile);
-            // 업로드, 삭제 요청 실행
-            profileImageUrl = s3Util.executePutRequest(putRequest);
-            s3Util.executeDeleteRequest(deleteRequest);
-        }
-
-        member.updateInfo(memberInfoUpdateDto.getNickname(), profileImageUrl);
+    public long updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
+        long currentMemberId = SecurityUtil.getCurrentMemberId();
+        Member member = findMember(currentMemberId);
+//        List<ProfileImage> ProfileImage = profileImageRepository.findAllById(profileUpdateDto.getProfileImageId());
+//        int index = ProfileImage.size();
+        List<ProfileImage> profileImages = new ArrayList<>();
+//        for(MultipartFile multipartFile : profileUpdateDto.getImageFile()) {
+//            // 새로운 이미지를 WebP로 변환
+//            var createdImageFile = imageUtil.convertImageToWebp(multipartFile, member.getEmail(), profileUpdateDto.getNickname());
+//            // 업로드 요청
+//            var putRequest = s3Util.createPutObjectRequest(createdImageFile);
+//            // 업로드, 삭제 요청 실행
+//            String profileImageUrl = s3Util.executePutRequest(putRequest);
+//            profileImages.add(new ProfileImage(member, profileImageUrl, index++));
+//        }
+//        for(ProfileImage profileImage : ProfileImage){
+//            // 기존 이미지 삭제 요청
+//            var deleteRequest = s3Util.createDeleteRequest(profileImage.getProfileImageUrl());
+//            s3Util.executeDeleteRequest(deleteRequest);
+//        }
+//        member.updateInfo(profileUpdateDto.getNickname(), profileUpdateDto.getProfile());
         return currentMemberId;
     }
 
@@ -162,7 +148,7 @@ public class MemberService {
         var userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         // 3. (수정) Redis 저장소에서 토큰 가져오는것으로 대체
-        String savedRefreshToken = redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        String savedRefreshToken = redisTemplate.opsForValue().get("JWT:" + authentication.getName());
         if (savedRefreshToken == null) {
             throw new RefreshTokenNotFoundException("로그아웃 된 사용자입니다.");
         }
@@ -176,45 +162,30 @@ public class MemberService {
         TokenResponseDto refreshedTokenResponseDto = jwtProvider.createTokenDto(userDetails);
 
         // 6. db의 리프레쉬 토큰 정보 업데이트 -> Redis에 Refresh 업데이트
-        redisService.setDataWithExpiration("RT:" + authentication.getName(),
+        redisService.setDataWithExpiration("JWT:" + authentication.getName(),
                 refreshedTokenResponseDto.getRefreshToken(),
                 refreshedTokenResponseDto.getRefreshTokenLifetimeInMs());
 
         // 토큰 발급
         return refreshedTokenResponseDto;
     }
-
     @Transactional
     public Boolean logout(String email) {
-//        Member member = memberRepository.findByEmail(email)
-//                .orElseThrow(() -> new EntityNotFoundException(Member.class.getPackageName()));
-//        sseEmitters.remove(member.getId());
-        return redisTemplate.delete("RT:" + email);
+        return redisTemplate.delete("JWT:" + email);
     }
-
     @Transactional
-    public long resetProfileImage(long currentMemberId) {
-        var member = getMember(currentMemberId);
-        var deleteRequest = s3Util.createDeleteRequest(member.getProfileImageUrl());
-        s3Util.executeDeleteRequest(deleteRequest);
-        member.updateInfo(member.getNickname(), DEFAULT_PROFILE_IMAGE_URL);
-        return member.getId();
-    }
-
-    @Transactional
-    public long deleteAccount(long targetId) {
-        var member = getMember(targetId);
+    public String deleteAccount() {
+        long memberId = SecurityUtil.getCurrentMemberId();
+        Member member = findMember(memberId);
         memberRepository.delete(member);
-        redisTemplate.delete("RT:" + member.getEmail());
-
+        redisTemplate.delete("JWT:" + member.getEmail());
         // 받은 모든 알림 삭제
-        List<Alarm> alarms = alarmRepository.findAllByReceiverMemberId(targetId);
+        List<Alarm> alarms = alarmRepository.findAllByReceiverMemberId(memberId);
         alarmRepository.deleteAll(alarms);
-
-        return targetId;
+        return member.getEmail();
     }
 
-    private Member getMember(long memberId) {
+    public Member findMember(long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(Member.class.getPackageName()));
     }
@@ -246,26 +217,5 @@ public class MemberService {
                 targetId, currentMemberId, FriendState.FRIEND)
                 || friendRepository.existsByFromMemberIdAndToMemberIdAndFriendState(
                 currentMemberId, targetId, FriendState.FRIEND);
-    }
-
-    @Transactional
-    public long test(TestDto testDto) {
-        checkEmail(testDto.getEmail());
-        Member member = memberRepository.save(new Member(testDto, bCryptPasswordEncoder));
-        List<ProfileImage> profileImages = new ArrayList<>();
-        for(MultipartFile multipartFile : testDto.getImageFile()) {
-            // 새로운 이미지를 WebP로 변환
-            var createdImageFile = imageUtil.convertToWebp(multipartFile, testDto.getNickname());
-
-            // 리사이즈 후 원본 삭제
-//            var thumbnail = imageUtil.resizeImage(createdImageFile);
-//            createdImageFile.delete();
-            // 업로드 요청
-            var putRequest = s3Util.createPutObjectRequest(createdImageFile);
-            // 업로드, 삭제 요청 실행
-            String profileImageUrl = s3Util.executePutRequest(putRequest);
-            profileImages.add(new ProfileImage(member, profileImageUrl));
-        }
-        return profileImageRepository.saveAll(profileImages).stream().count();
     }
 }

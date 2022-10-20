@@ -119,7 +119,7 @@ public class JwtProvider {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new UsernameNotFoundException("memberId: " + memberId + "는 존재하지 않습니다."));
 
-        String savedRefreshToken = redisTemplate.opsForValue().get("RT:" + member.getEmail());
+        String savedRefreshToken = redisTemplate.opsForValue().get("JWT:" + member.getEmail());
 
         // db에서 리프레쉬 토큰이 존재하는지(로그인 여부) 확인
         if (savedRefreshToken == null) {
