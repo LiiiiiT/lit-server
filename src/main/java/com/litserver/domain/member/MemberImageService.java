@@ -16,7 +16,7 @@ public class MemberImageService {
     private final S3Util s3Util;
     private final ImageUtil imageUtil;
     private final ProfileImageRepository profileImageRepository;
-    public List<ProfileImage> addProfileImagesInS3(SignDto signDto, Member member, List<Integer> imageOrderList) {
+    public List<ProfileImage> addProfileImagesInS3(SignDto signDto, Member member) {
         List<ProfileImage> profileImages = new ArrayList<>();
         for(int i=0; i<signDto.getImageFileList().size(); i++) {
             // 이미지를 WebP로 변환
@@ -25,7 +25,7 @@ public class MemberImageService {
             var putRequest = s3Util.createPutObjectRequest(createdImageFile);
             // 업로드 요청 실행
             String profileImageUrl = s3Util.executePutRequest(putRequest);
-            profileImages.add(new ProfileImage(member, profileImageUrl, imageOrderList.size()==0?profileImages.size():imageOrderList.get(i)));
+            profileImages.add(new ProfileImage(member, profileImageUrl, profileImages.size()));
         }
         return profileImages;
     }
