@@ -57,7 +57,7 @@ public class MemberService {
     public Member signUp(SignDto signDto) {
         checkEmail(signDto.getEmail());
         Member member = memberRepository.save(new Member(signDto, bCryptPasswordEncoder));
-        if(signDto.getImageFileList().size()!=0){
+        if(signDto.getImageFileList()!=null){
             List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto, member);
             profileImageRepository.saveAll(profileImages).size();
         }
