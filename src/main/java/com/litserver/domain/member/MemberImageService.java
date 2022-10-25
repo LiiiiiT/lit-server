@@ -51,7 +51,7 @@ public class MemberImageService {
 
 
     public void countImage(SignDto signDto) {
-        if(signDto.getImageFileList()!=null) throw new ImageProcessException(IMAGE_UPLOAD_FAILURE, "추출할 이미지가 없습니다.");
-        if(signDto.getImageFileList().size()>5) throw new ImageProcessException(IMAGE_UPLOAD_FAILURE, "5개 이하의 이미지만 업로드 가능합니다.");
+        if(signDto.getImageFileList() == null) throw new ImageProcessException(IMAGE_UPLOAD_FAILURE, "추출할 이미지가 없습니다.");
+        if(signDto.getImageFileList().size() > 5) throw new ImageProcessException(IMAGE_UPLOAD_FAILURE, "5개 이하의 이미지만 업로드 가능합니다.");
     }
 }
