@@ -18,6 +18,6 @@ import java.util.List;
 public class ProfileUpdateDto {
     String nickname;
     String profile;
-    List<MultipartFile> imageFile;
+    List<MultipartFile> imageFileList;
     List<Long> imageOrderIdList;
 }
