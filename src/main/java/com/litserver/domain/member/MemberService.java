@@ -103,7 +103,6 @@ public class MemberService {
     @Transactional
     public List<ProfileImage> updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
-//        long currentMemberId = 1;
         Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
 
         List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberId(member.getId());
@@ -137,7 +136,7 @@ public class MemberService {
         // 저장한 애들 db 추가.
         profileImageRepository.saveAll(profileImageList);
 
-        return profileImageRepository.findAllByMemberId(currentMemberId);
+        return profileImageRepository.findAllByMemberId(member.getId());
     }
 
     @Transactional

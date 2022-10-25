@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long> {
 
-    List<ProfileImage> findAllByMemberId(long memberId);
+    List<ProfileImage> findAllByMemberId(Long memberId);
 }
