@@ -42,10 +42,10 @@ public class MemberImageService {
     }
     @Transactional
     public long resetProfileImage(long memberId) {
-        for(ProfileImage profileImage : profileImageRepository.findAllByMemberId(memberId)){
-            var deleteRequest = s3Util.createDeleteRequest(profileImage.getProfileImageUrl());
-            s3Util.executeDeleteRequest(deleteRequest);
-        }
+//        for(ProfileImage profileImage : profileImageRepository.findAllByMemberId(memberId)){
+//            var deleteRequest = s3Util.createDeleteRequest(profileImage.getProfileImageUrl());
+//            s3Util.executeDeleteRequest(deleteRequest);
+//        }
         return memberId;
     }
 
