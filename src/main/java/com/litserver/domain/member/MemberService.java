@@ -129,12 +129,12 @@ public class MemberService {
                                         .collect(Collectors.toList());
         // 기존 이미지파일 삭제
         memberImageService.deleteImageFileInS3(deleteProfileImageList.stream().map(ProfileImage::getProfileImageUrl).collect(Collectors.toList()));
-        profileImageRepository.deleteAll(deleteProfileImageList);
+        profileImageRepository.deleteAllByImageOrder(0);
 
         // 이미지 s3에 저장.
         profileImageList = memberImageService.addProfileImagesInS3(profileUpdateDto.getImageFileList(), member, emptyOrderList);
         // 저장한 애들 db 추가.
-        profileImageRepository.saveAll(profileImageList);
+        profileImageRepository.saveAllAndFlush(profileImageList);
 
         return profileImageRepository.findAllByMemberId(member);
     }
