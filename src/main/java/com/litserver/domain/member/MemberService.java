@@ -106,7 +106,7 @@ public class MemberService {
 //        long currentMemberId = 1;
         Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
 
-        List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberId(currentMemberId);
+        List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberId(member.getId());
         List<Integer> emptyOrderList = new ArrayList<>();
         int i = 0;
         for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
