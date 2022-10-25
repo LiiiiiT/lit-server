@@ -1,16 +1,15 @@
 package com.litserver.domain.member;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.litserver.domain.auth.dto.TokenRequestDto;
 import com.litserver.domain.member.dto.LoginDto;
 import com.litserver.domain.member.dto.ProfileUpdateDto;
 import com.litserver.domain.member.dto.SignDto;
 import com.litserver.global.common.ResponseHandler;
-import com.litserver.global.exception.runtime.UnAuthorizedException;
 import com.litserver.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +25,7 @@ public class MemberController {
     // 회원 가입
     @PostMapping("/auth/signup")
     public ResponseEntity<Object> signUp(@Valid SignDto signDto) {
+        memberImageService.countImage(signDto);
         return ResponseHandler.ok(memberService.signUp(signDto));
     }
     // 로그인
@@ -49,6 +49,7 @@ public class MemberController {
     // 회원 정보 수정
     @PatchMapping("/info")
     public ResponseEntity<Object> updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
+
         return ResponseHandler.ok(memberService.updateMemberInfo(profileUpdateDto));
     }
     // 로그아웃

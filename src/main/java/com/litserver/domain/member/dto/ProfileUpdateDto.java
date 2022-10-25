@@ -19,5 +19,5 @@ public class ProfileUpdateDto {
     String nickname;
     String profile;
     List<MultipartFile> imageFile;
-    List<Integer> profileImageId;
+    List<Long> imageOrderIdList;
 }

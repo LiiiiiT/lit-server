@@ -33,4 +33,13 @@ public class ProfileImage {
         this.profileImageUrl = profileImageUrl;
         this.imageOrder = imageOrder;
     }
+
+    public int setImageOrder(Long imageOrderId, int imageOrder){
+        if(imageOrderId == null){
+            this.imageOrder = imageOrder;
+        }else{
+            this.imageOrder = 0;
+        }
+        return imageOrder;
+    }
 }

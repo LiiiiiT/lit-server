@@ -34,7 +34,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -54,14 +57,13 @@ public class MemberService {
     private final AlarmRepository alarmRepository;
     private final MemberImageService memberImageService;
     @Transactional
-    public Member signUp(SignDto signDto) {
+    public String signUp(SignDto signDto) {
         checkEmail(signDto.getEmail());
         Member member = memberRepository.save(new Member(signDto, bCryptPasswordEncoder));
-        if(signDto.getImageFileList()!=null){
-            List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto, member);
-            profileImageRepository.saveAll(profileImages).size();
-        }
-        return member;
+        List<Integer> integerList = new ArrayList<>();
+        List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto.getImageFileList(), member, integerList);
+        profileImageRepository.saveAll(profileImages).size();
+        return member.getEmail();
     }
 
 
@@ -100,28 +102,43 @@ public class MemberService {
 
     // TODO: 2022/10/19 사진 순서 만들기
     @Transactional
-    public long updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
+    public List<ProfileImage> updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
         long currentMemberId = SecurityUtil.getCurrentMemberId();
-        Member member = findMember(currentMemberId);
-//        List<ProfileImage> ProfileImage = profileImageRepository.findAllById(profileUpdateDto.getProfileImageId());
-//        int index = ProfileImage.size();
-        List<ProfileImage> profileImages = new ArrayList<>();
-//        for(MultipartFile multipartFile : profileUpdateDto.getImageFile()) {
-//            // 새로운 이미지를 WebP로 변환
-//            var createdImageFile = imageUtil.convertImageToWebp(multipartFile, member.getEmail(), profileUpdateDto.getNickname());
-//            // 업로드 요청
-//            var putRequest = s3Util.createPutObjectRequest(createdImageFile);
-//            // 업로드, 삭제 요청 실행
-//            String profileImageUrl = s3Util.executePutRequest(putRequest);
-//            profileImages.add(new ProfileImage(member, profileImageUrl, index++));
-//        }
-//        for(ProfileImage profileImage : ProfileImage){
-//            // 기존 이미지 삭제 요청
-//            var deleteRequest = s3Util.createDeleteRequest(profileImage.getProfileImageUrl());
-//            s3Util.executeDeleteRequest(deleteRequest);
-//        }
-//        member.updateInfo(profileUpdateDto.getNickname(), profileUpdateDto.getProfile());
-        return currentMemberId;
+//        long currentMemberId = 1;
+        Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
+
+        List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberId(currentMemberId);
+        List<Integer> emptyOrderList = new ArrayList<>();
+        int i = 0;
+        for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
+            for(ProfileImage profileImage : profileImageList){
+                emptyOrderList.add(profileImage.setImageOrder(imageOrderId, i));
+            }
+            i++;
+        }
+        // 비어있는 오더 리스트 확인
+        emptyOrderList.removeAll(Collections.singletonList(0));
+
+        // order 값이 0인거 저장.
+//        profileImageRepository.saveAll(profileImageList);
+
+        Predicate<ProfileImage> getZeroOrderPredicate = f -> f.getImageOrder() == 0;
+
+        // Order 값이 0인 애들 고르기
+        List<ProfileImage> deleteProfileImageList = profileImageList
+                                        .stream()
+                                        .filter(getZeroOrderPredicate)
+                                        .collect(Collectors.toList());
+        // 기존 이미지파일 삭제
+        memberImageService.deleteImageFileInS3(deleteProfileImageList.stream().map(ProfileImage::getProfileImageUrl).collect(Collectors.toList()));
+        profileImageRepository.deleteAll(deleteProfileImageList);
+
+        // 이미지 s3에 저장.
+        profileImageList = memberImageService.addProfileImagesInS3(profileUpdateDto.getImageFile(), member, emptyOrderList);
+        // 저장한 애들 db 추가.
+        profileImageRepository.saveAll(profileImageList);
+
+        return profileImageRepository.findAllByMemberId(currentMemberId);
     }
 
     @Transactional
