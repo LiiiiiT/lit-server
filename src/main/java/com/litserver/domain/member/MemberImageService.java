@@ -29,7 +29,9 @@ public class MemberImageService {
             var putRequest = s3Util.createPutObjectRequest(createdImageFile);
             // 업로드 요청 실행
             String profileImageUrl = s3Util.executePutRequest(putRequest);
-            profileImages.add(new ProfileImage(member, profileImageUrl, imageOrder.size()==0?profileImages.size():imageOrder.get(0)));
+            System.out.println(profileImages.size());
+            System.out.println(imageOrder.get(i));
+            profileImages.add(new ProfileImage(member, profileImageUrl, imageOrder.size() == 0 ?profileImages.size() :imageOrder.get(i)));
         }
         return profileImages;
     }

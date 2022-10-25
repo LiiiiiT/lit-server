@@ -3,6 +3,7 @@ package com.litserver.domain.member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@ToString
 public class ProfileImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +36,13 @@ public class ProfileImage {
         this.imageOrder = imageOrder;
     }
 
-    public int setImageOrder(Long imageOrderId, int imageOrder){
+    public Integer setImageOrder(Long imageOrderId, int imageOrder){
         if(imageOrderId == null){
             this.imageOrder = imageOrder;
+            return null;
         }else{
             this.imageOrder = 0;
+            return imageOrder;
         }
-        return imageOrder;
     }
 }

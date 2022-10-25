@@ -62,7 +62,8 @@ public class MemberService {
         Member member = memberRepository.save(new Member(signDto, bCryptPasswordEncoder));
         List<Integer> integerList = new ArrayList<>();
         List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto.getImageFileList(), member, integerList);
-        profileImageRepository.saveAll(profileImages).size();
+        System.out.println(profileImages.toString());
+        profileImageRepository.saveAll(profileImages);
         return member.getEmail();
     }
 
@@ -117,7 +118,7 @@ public class MemberService {
             i++;
         }
         // 비어있는 오더 리스트 확인
-        emptyOrderList.removeAll(Collections.singletonList(0));
+        emptyOrderList.removeAll(Collections.singletonList(null));
 
         // order 값이 0인거 저장.
 //        profileImageRepository.saveAll(profileImageList);
