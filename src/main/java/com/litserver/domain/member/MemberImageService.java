@@ -23,18 +23,13 @@ public class MemberImageService {
     public List<ProfileImage> addProfileImagesInS3(List<MultipartFile> imageFileList, Member member, List<Integer> imageOrder) {
         List<ProfileImage> profileImageList = new ArrayList<>();
         for(int i = 0; i < imageFileList.size(); i++) {
-            System.out.println(i);
             // 이미지를 WebP로 변환
             var createdImageFile = imageUtil.convertImageToWebp(imageFileList.get(i), member.getEmail(), member.getNickname());
             // 업로드 요청
             var putRequest = s3Util.createPutObjectRequest(createdImageFile);
             // 업로드 요청 실행
             String profileImageUrl = s3Util.executePutRequest(putRequest);
-            if(imageOrder == null){
-                profileImageList.add(new ProfileImage(member, profileImageUrl, i));
-            }else{
-                profileImageList.add(new ProfileImage(member, profileImageUrl, imageOrder.get(i)));
-            }
+            profileImageList.add(new ProfileImage(member, profileImageUrl, imageOrder == null? i + 1: imageOrder.get(i)));
         }
         return profileImageList;
     }

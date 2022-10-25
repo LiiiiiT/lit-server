@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class ProfileImage {
     private String profileImageUrl;
 
     @Column
-    @NotBlank
+    @NotNull
     private int imageOrder;
 
     public ProfileImage(Member member, String profileImageUrl, int imageOrder) {
