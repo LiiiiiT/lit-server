@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,10 +32,10 @@ public class ProfileImage {
     @NotBlank
     private int imageOrder;
 
-    public ProfileImage(Member member, String profileImageUrl, List<Integer> imageOrder, int i) {
+    public ProfileImage(Member member, String profileImageUrl, int imageOrder) {
         this.memberId = member;
         this.profileImageUrl = profileImageUrl;
-        this.imageOrder = imageOrder == null? 1 + i: imageOrder.get(i);
+        this.imageOrder = imageOrder;
     }
 
     public Integer setImageOrder(Long imageOrderId, int imageOrder){
