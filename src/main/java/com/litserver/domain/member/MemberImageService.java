@@ -30,8 +30,8 @@ public class MemberImageService {
             // 업로드 요청 실행
             String profileImageUrl = s3Util.executePutRequest(putRequest);
             System.out.println(profileImages.size());
-            System.out.println(imageOrder.get(i));
-            profileImages.add(new ProfileImage(member, profileImageUrl, imageOrder.size() == 0 ?profileImages.size() :imageOrder.get(i)));
+            System.out.println(imageOrder.size() == 0);
+            profileImages.add(new ProfileImage(member, profileImageUrl, imageOrder.size() == 0 ?1 + profileImages.size() :imageOrder.get(i)));
         }
         return profileImages;
     }
