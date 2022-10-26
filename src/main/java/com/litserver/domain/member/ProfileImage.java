@@ -34,6 +34,8 @@ public class ProfileImage {
     }
 
     public Integer setImageOrder(Long imageOrderId, int imageOrder){
+        System.out.println("imageOrderId=="+imageOrderId);
+        System.out.println("imageOrder=="+imageOrder);
         if(imageOrderId == null){
             this.imageOrder = 0;
             return null;

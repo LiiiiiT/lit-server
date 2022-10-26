@@ -114,8 +114,10 @@ public class MemberService {
             }
             i++;
         }
+        System.out.println("emptyOrderList ==="+emptyOrderList.toString());
         // 비어있는 오더 리스트 확인
         emptyOrderList.removeAll(Collections.singletonList(null));
+        System.out.println("emptyOrderList ==="+emptyOrderList.toString());
 
         // order 값이 0인거 저장.
 //        profileImageRepository.saveAll(profileImageList);
