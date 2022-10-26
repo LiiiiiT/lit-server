@@ -22,7 +22,7 @@ public class MemberImageService {
     private final ProfileImageRepository profileImageRepository;
     public List<ProfileImage> addProfileImagesInS3(List<MultipartFile> imageFileList, Member member, List<Integer> imageOrder) {
         List<ProfileImage> profileImageList = new ArrayList<>();
-        System.out.println(imageOrder.toString());
+        if(imageOrder!=null) System.out.println(imageOrder.toString());
         for(int i = 0; i < imageFileList.size(); i++) {
             // 이미지를 WebP로 변환
             var createdImageFile = imageUtil.convertImageToWebp(imageFileList.get(i), member.getEmail(), member.getNickname());
