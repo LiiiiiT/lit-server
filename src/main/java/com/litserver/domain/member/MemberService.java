@@ -59,7 +59,7 @@ public class MemberService {
         checkEmail(signDto.getEmail());
         Member member = memberRepository.save(new Member(signDto, bCryptPasswordEncoder));
         List<ProfileImage> profileImages = memberImageService.addProfileImagesInS3(signDto.getImageFileList(), member, null);
-        profileImageRepository.saveAll(profileImages);
+        memberImageService.saveAllProfileImage(profileImages);
         return member.getEmail();
     }
 
@@ -97,11 +97,15 @@ public class MemberService {
                 .build();
     }
 
-    // TODO: 2022/10/19 사진 순서 만들기
     @Transactional
     public int updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
+        return updateProfileImage(profileUpdateDto, member);
+    }
+
+    // TODO: 2022/10/26 event로 빼기.
+    private int updateProfileImage(ProfileUpdateDto profileUpdateDto, Member member) {
         List<ProfileImage> profileImageList = profileImageRepository.findAllByMember(member);
         // 기존 있는 Order 수정.
         List<ProfileImage> updateProfileImageList = profileImageList.stream()
@@ -133,7 +137,6 @@ public class MemberService {
         profileImageList = memberImageService.addProfileImagesInS3(profileUpdateDto.getImageFileList(), member, emptyOrderList);
         // 저장한 애들 db 추가.
         profileImageRepository.saveAllAndFlush(profileImageList);
-
         return profileImageRepository.countByMember(member);
     }
 

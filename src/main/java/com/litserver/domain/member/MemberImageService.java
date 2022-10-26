@@ -54,4 +54,9 @@ public class MemberImageService {
         if(signDto.getImageFileList() == null) throw new ImageProcessException(IMAGE_UPLOAD_FAILURE, "추출할 이미지가 없습니다.");
         if(signDto.getImageFileList().size() > 5) throw new ImageProcessException(IMAGE_UPLOAD_FAILURE, "5개 이하의 이미지만 업로드 가능합니다.");
     }
+
+    // TODO: 2022/10/26 Event로 빼기
+    public void saveAllProfileImage(List<ProfileImage> profileImages) {
+        profileImageRepository.saveAll(profileImages);
+    }
 }
