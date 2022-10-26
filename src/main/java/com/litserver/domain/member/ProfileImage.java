@@ -35,10 +35,10 @@ public class ProfileImage {
 
     public Integer setImageOrder(Long imageOrderId, int imageOrder){
         if(imageOrderId == null){
-            this.imageOrder = imageOrder;
+            this.imageOrder = 0;
             return null;
         }else{
-            this.imageOrder = 0;
+            this.imageOrder = imageOrder;
             return imageOrder;
         }
     }
