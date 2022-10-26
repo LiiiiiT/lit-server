@@ -33,9 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -107,25 +105,10 @@ public class MemberService {
 
         List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberOrderByImageOrderAsc(member);
         List<Integer> emptyOrderList = new ArrayList<>();
-        int i = 0;
-        for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
-            emptyOrderList.add(profileImageList.get(i).setImageOrder(imageOrderId, i));
-            i++;
-        }
-//        int i = 0;
-//        for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
-//            for(ProfileImage profileImage : profileImageList){
-//                emptyOrderList.add(profileImage.setImageOrder(imageOrderId, i));
-//            }
-//            i++;
-//        }
-        System.out.println("emptyOrderList ==="+emptyOrderList.toString());
-        // 비어있는 오더 리스트 확인
-        emptyOrderList.removeAll(Collections.singletonList(null));
-        System.out.println("emptyOrderList ==="+emptyOrderList.toString());
+        setImageOrderAndCheckEmptyOrder(profileUpdateDto, profileImageList, emptyOrderList);
 
-        // order 값이 0인거 저장.
-//        profileImageRepository.saveAll(profileImageList);
+        // 변경된 ImageOrder 저장
+        profileImageRepository.saveAll(profileImageList);
 
         Predicate<ProfileImage> getZeroOrderPredicate = f -> f.getImageOrder() == 0;
 
@@ -144,6 +127,14 @@ public class MemberService {
         profileImageRepository.saveAllAndFlush(profileImageList);
 
         return profileImageRepository.countByMember(member);
+    }
+
+    private void setImageOrderAndCheckEmptyOrder(ProfileUpdateDto profileUpdateDto, List<ProfileImage> profileImageList, List<Integer> emptyOrderList) {
+        int i = 0, j = 0;
+        for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
+            j += profileImageList.get(j).setImageOrder(imageOrderId, i);
+            if(imageOrderId == null) emptyOrderList.add(i);
+        }
     }
 
     @Transactional

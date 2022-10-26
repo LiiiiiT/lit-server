@@ -33,15 +33,15 @@ public class ProfileImage {
         this.imageOrder = imageOrder;
     }
 
-    public Integer setImageOrder(Long imageOrderId, int imageOrder){
+    public int setImageOrder(Long imageOrderId, int imageOrder){
         System.out.println("imageOrderId=="+imageOrderId);
         System.out.println("imageOrder=="+imageOrder);
         if(imageOrderId == null){
             this.imageOrder = 0;
-            return imageOrder;
+            return 0;
         }else{
             this.imageOrder = imageOrder;
-            return null;
+            return 1;
         }
     }
 }
