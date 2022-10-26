@@ -105,7 +105,7 @@ public class MemberService {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
 
-        List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberId(member);
+        List<ProfileImage> profileImageList = profileImageRepository.findAllByMember(member);
         List<Integer> emptyOrderList = new ArrayList<>();
         int i = 0;
         for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
@@ -136,7 +136,7 @@ public class MemberService {
         // 저장한 애들 db 추가.
         profileImageRepository.saveAllAndFlush(profileImageList);
 
-        return profileImageRepository.findAllByMemberId(member);
+        return profileImageRepository.findAllByMember(member);
     }
 
     @Transactional

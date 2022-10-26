@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long> {
 
-    List<ProfileImage> findAllByMemberId(Member member);
+    List<ProfileImage> findAllByMember(Member member);
 
     void deleteAllByImageOrder(int imageOrder);
 }
