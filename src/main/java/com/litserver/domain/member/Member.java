@@ -40,7 +40,7 @@ public class Member extends BaseTimeEntity {
     @Column
     private String profile;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "memberId",
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProfileImage> profileImages = new ArrayList<>();

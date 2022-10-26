@@ -5,13 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@ToString(exclude = "memberId")
 public class ProfileImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +17,7 @@ public class ProfileImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Member memberId;
+    private Member member;
 
     @Column
     @NotBlank
@@ -31,7 +28,7 @@ public class ProfileImage {
     private int imageOrder;
 
     public ProfileImage(Member member, String profileImageUrl, int imageOrder) {
-        this.memberId = member;
+        this.member = member;
         this.profileImageUrl = profileImageUrl;
         this.imageOrder = imageOrder;
     }
