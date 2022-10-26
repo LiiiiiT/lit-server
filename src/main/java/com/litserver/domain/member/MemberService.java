@@ -114,7 +114,6 @@ public class MemberService {
         // 변경된 ImageOrder 저장
         profileImageRepository.saveAll(updateProfileImageList);
 
-
         List<ProfileImage> deleteProfileImageList = profileImageList.stream()
                 .filter(f -> !profileUpdateDto.getImageOrderIdList().contains(f.getId()))
                 .map(m -> m.setDeleteList())
@@ -127,7 +126,7 @@ public class MemberService {
         List<Integer> emptyOrderList = new ArrayList<>();
         int i = 1;
         for(Long profileImageId : profileUpdateDto.getImageOrderIdList()){
-            if(profileImageId==null) emptyOrderList.add(i);
+            if(profileImageId == null || profileImageId == 0) emptyOrderList.add(i);
             i++;
         }
         // 이미지 s3에 저장.
