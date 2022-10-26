@@ -38,10 +38,10 @@ public class ProfileImage {
         System.out.println("imageOrder=="+imageOrder);
         if(imageOrderId == null){
             this.imageOrder = 0;
-            return null;
+            return imageOrder;
         }else{
             this.imageOrder = imageOrder;
-            return imageOrder;
+            return null;
         }
     }
 }

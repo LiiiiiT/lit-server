@@ -109,11 +109,16 @@ public class MemberService {
         List<Integer> emptyOrderList = new ArrayList<>();
         int i = 0;
         for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
-            for(ProfileImage profileImage : profileImageList){
-                emptyOrderList.add(profileImage.setImageOrder(imageOrderId, i));
-            }
+            emptyOrderList.add(profileImageList.get(i).setImageOrder(imageOrderId, i));
             i++;
         }
+//        int i = 0;
+//        for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
+//            for(ProfileImage profileImage : profileImageList){
+//                emptyOrderList.add(profileImage.setImageOrder(imageOrderId, i));
+//            }
+//            i++;
+//        }
         System.out.println("emptyOrderList ==="+emptyOrderList.toString());
         // 비어있는 오더 리스트 확인
         emptyOrderList.removeAll(Collections.singletonList(null));
