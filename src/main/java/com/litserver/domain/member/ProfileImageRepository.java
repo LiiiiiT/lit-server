@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long> {
 
-    List<ProfileImage> findAllByMember(Member member);
-
     void deleteAllByImageOrder(int imageOrder);
 
     int countByMember(Member member);
+
+    List<ProfileImage> findAllByMemberOrderByImageOrderAsc(Member member);
 }
