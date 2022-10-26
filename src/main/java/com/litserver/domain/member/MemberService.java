@@ -102,39 +102,40 @@ public class MemberService {
     public int updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
+        List<ProfileImage> profileImageList = profileImageRepository.findAllByMember(member);
+        // 기존 있는 Order 수정.
+        List<ProfileImage> updateProfileImageList = profileImageList.stream()
+                .filter(f -> profileUpdateDto.getImageOrderIdList().contains(f.getId()))
+                .collect(Collectors.toList());
 
-        List<ProfileImage> profileImageList = profileImageRepository.findAllByMemberOrderByImageOrderAsc(member);
-        List<Integer> emptyOrderList = new ArrayList<>();
-        setImageOrderAndCheckEmptyOrder(profileUpdateDto, profileImageList, emptyOrderList);
-
+        for(ProfileImage profileImage : updateProfileImageList){
+            profileImage.setImageOrder(profileUpdateDto.getImageOrderIdList());
+        }
         // 변경된 ImageOrder 저장
-        profileImageRepository.saveAll(profileImageList);
+        profileImageRepository.saveAll(updateProfileImageList);
 
-        Predicate<ProfileImage> getZeroOrderPredicate = f -> f.getImageOrder() == 0;
 
-        // Order 값이 0인 애들 고르기
-        List<ProfileImage> deleteProfileImageList = profileImageList
-                                        .stream()
-                                        .filter(getZeroOrderPredicate)
-                                        .collect(Collectors.toList());
+        List<ProfileImage> deleteProfileImageList = profileImageList.stream()
+                .filter(f -> !profileUpdateDto.getImageOrderIdList().contains(f.getId()))
+                .map(m -> m.setDeleteList())
+                .collect(Collectors.toList());
+
         // 기존 이미지파일 삭제
         memberImageService.deleteImageFileInS3(deleteProfileImageList.stream().map(ProfileImage::getProfileImageUrl).collect(Collectors.toList()));
-        profileImageRepository.deleteAllByImageOrder(0);
+        profileImageRepository.deleteAll(deleteProfileImageList);
 
+        List<Integer> emptyOrderList = new ArrayList<>();
+        int i = 1;
+        for(Long profileImageId : profileUpdateDto.getImageOrderIdList()){
+            if(profileImageId==null) emptyOrderList.add(i);
+            i++;
+        }
         // 이미지 s3에 저장.
         profileImageList = memberImageService.addProfileImagesInS3(profileUpdateDto.getImageFileList(), member, emptyOrderList);
         // 저장한 애들 db 추가.
         profileImageRepository.saveAllAndFlush(profileImageList);
 
         return profileImageRepository.countByMember(member);
-    }
-
-    private void setImageOrderAndCheckEmptyOrder(ProfileUpdateDto profileUpdateDto, List<ProfileImage> profileImageList, List<Integer> emptyOrderList) {
-        int i = 0, j = 0;
-        for(Long imageOrderId : profileUpdateDto.getImageOrderIdList()){
-            j += profileImageList.get(j).setImageOrder(imageOrderId, i);
-            if(imageOrderId == null) emptyOrderList.add(i);
-        }
     }
 
     @Transactional

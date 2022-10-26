@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,15 +34,12 @@ public class ProfileImage {
         this.imageOrder = imageOrder;
     }
 
-    public int setImageOrder(Long imageOrderId, int imageOrder){
-        System.out.println("imageOrderId=="+imageOrderId);
-        System.out.println("imageOrder=="+imageOrder);
-        if(imageOrderId == null){
-            this.imageOrder = 0;
-            return 0;
-        }else{
-            this.imageOrder = imageOrder;
-            return 1;
-        }
+    public void setImageOrder(List<Long> imageOrderList){
+        this.imageOrder = imageOrderList.indexOf(this.getId()) + 1;
+    }
+
+    public ProfileImage setDeleteList(){
+        this.imageOrder = 0;
+        return this;
     }
 }
