@@ -9,4 +9,6 @@ public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long
     List<ProfileImage> findAllByMember(Member member);
 
     void deleteAllByImageOrder(int imageOrder);
+
+    int countByMember(Member member);
 }

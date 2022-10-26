@@ -101,7 +101,7 @@ public class MemberService {
 
     // TODO: 2022/10/19 사진 순서 만들기
     @Transactional
-    public List<ProfileImage> updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
+    public int updateMemberInfo(ProfileUpdateDto profileUpdateDto) {
         Long currentMemberId = SecurityUtil.getCurrentMemberId();
         Member member = memberRepository.findById(currentMemberId).orElseThrow(() -> new EntityNotFoundException(Member.class.getName()));
 
@@ -136,7 +136,7 @@ public class MemberService {
         // 저장한 애들 db 추가.
         profileImageRepository.saveAllAndFlush(profileImageList);
 
-        return profileImageRepository.findAllByMember(member);
+        return profileImageRepository.countByMember(member);
     }
 
     @Transactional
