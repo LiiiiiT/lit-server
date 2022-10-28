@@ -1,4 +1,4 @@
-package com.litserver.global.exception.runtime.image;
+package com.litserver.global.exception.runtime;
 
 import com.litserver.global.exception.ExceptionCode;
 import lombok.Getter;

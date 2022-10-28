@@ -1,7 +1,7 @@
 package com.litserver.domain.member;
 
 import com.litserver.domain.member.dto.SignDto;
-import com.litserver.global.exception.runtime.image.ImageProcessException;
+import com.litserver.global.exception.runtime.ImageProcessException;
 import com.litserver.global.util.ImageUtil;
 import com.litserver.global.util.S3Util;
 import lombok.RequiredArgsConstructor;

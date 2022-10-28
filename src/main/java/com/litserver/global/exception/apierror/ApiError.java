@@ -3,7 +3,7 @@ package com.litserver.global.exception.apierror;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import com.litserver.global.exception.runtime.image.ImageProcessException;
+import com.litserver.global.exception.runtime.ImageProcessException;
 import com.litserver.global.util.LowerCaseClassNameResolver;
 import lombok.Builder;
 import lombok.Data;
