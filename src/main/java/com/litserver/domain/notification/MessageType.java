@@ -1,4 +1,4 @@
-package com.litserver.domain.sse;
+package com.litserver.domain.notification;
 
 public enum MessageType {
     POST, COMMENT, FRIEND

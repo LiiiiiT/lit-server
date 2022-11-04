@@ -7,8 +7,8 @@ import com.litserver.domain.friend.FriendRepository;
 import com.litserver.domain.friend.FriendState;
 import com.litserver.domain.member.dto.*;
 import com.litserver.domain.member.exception.DuplicateUserInfoException;
-import com.litserver.domain.sse.Alarm;
-import com.litserver.domain.sse.AlarmRepository;
+import com.litserver.domain.notification.Notification;
+import com.litserver.domain.notification.NotificationRepository;
 import com.litserver.global.exception.runtime.InvalidJwtException;
 import com.litserver.global.exception.runtime.RefreshTokenNotFoundException;
 import com.litserver.global.exception.runtime.UnAuthorizedException;
@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -52,7 +51,7 @@ public class MemberService {
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
     private final RedisTemplate<String, String> redisTemplate;
-    private final AlarmRepository alarmRepository;
+    private final NotificationRepository notificationRepository;
     private final MemberImageService memberImageService;
     @Transactional
     public String signUp(SignDto signDto) {
@@ -199,8 +198,8 @@ public class MemberService {
         memberRepository.delete(member);
         redisTemplate.delete("JWT:" + member.getEmail());
         // 받은 모든 알림 삭제
-        List<Alarm> alarms = alarmRepository.findAllByReceiverMemberId(memberId);
-        alarmRepository.deleteAll(alarms);
+        List<Notification> notifications = notificationRepository.findAllByReceiverMemberId(memberId);
+        notificationRepository.deleteAll(notifications);
         return member.getEmail();
     }
 

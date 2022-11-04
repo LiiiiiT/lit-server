@@ -1,4 +1,4 @@
-package com.litserver.domain.sse;
+package com.litserver.domain.notification;
 
 import com.litserver.domain.member.Member;
 import com.litserver.global.common.BaseTimeEntity;
@@ -11,10 +11,10 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Builder
-public class Alarm extends BaseTimeEntity {
+public class Notification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "alarm_id")
+    @Column(name = "notification_id")
     private Long id;
 
     @Column(nullable = false)

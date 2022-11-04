@@ -3,7 +3,7 @@ package com.litserver.domain.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.litserver.domain.friend.Friend;
 import com.litserver.domain.member.dto.SignDto;
-import com.litserver.domain.sse.Alarm;
+import com.litserver.domain.notification.Notification;
 import com.litserver.global.common.BaseTimeEntity;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +29,16 @@ public class Member extends BaseTimeEntity {
     @Email
     @Column(unique = true)
     private String email;
-    @Column
-    @NotBlank
-    // @Size(min = 4, max = 20)
-    private String nickname;
-    @Column
     @NotBlank
     @JsonIgnore
     private String password;
-    @Column
+    @NotBlank
+    private String nickname;
+    @NotBlank
+    private char gender;
+    private double latitude;
+    private double longitude;
+
     private String profile;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member",
@@ -46,7 +46,6 @@ public class Member extends BaseTimeEntity {
     @Builder.Default
     private List<ProfileImage> profileImages = new ArrayList<>();
 
-    @Column
     @NotBlank
     @JsonIgnore
     private final String authority = "ROLE_USER";
@@ -67,9 +66,8 @@ public class Member extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "senderMember",
             cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Alarm> alarms = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberState memberState;
 
