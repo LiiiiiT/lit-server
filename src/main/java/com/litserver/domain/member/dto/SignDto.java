@@ -22,6 +22,6 @@ public class SignDto {
     String email;
     @NotBlank
     String password;
-    String profile;
-    List<MultipartFile> imageFileList;
+//    String profile;
+//    List<MultipartFile> imageFileList;
 }

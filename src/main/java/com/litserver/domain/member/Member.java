@@ -34,7 +34,7 @@ public class Member extends BaseTimeEntity {
     private String password;
     @NotBlank
     private String nickname;
-    @NotBlank
+
     private char gender;
     private double latitude;
     private double longitude;
@@ -75,7 +75,7 @@ public class Member extends BaseTimeEntity {
         this.email = signDto.getEmail();
         this.password = bCryptPasswordEncoder.encode(signDto.getPassword());
         this.nickname = signDto ==null ? signDto.getEmail().split("@")[0] : signDto.getNickname();
-        this.profile = signDto.getProfile();
+//        this.profile = signDto.getProfile();
         this.memberState = MemberState.WAIT;
     }
 }
